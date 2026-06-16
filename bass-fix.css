@@ -1,0 +1,1 @@
+.piano-cell.on,.piano-cell.on.white,.piano-cell.on.black,.piano-cell.on.beat-even,.piano-cell.on.beat-odd{background:#ffd84d!important;border:1px solid #f6c945!important;box-shadow:none!important;position:relative}.piano-cell.on::after{display:none!important}.key-label{cursor:pointer}.key-label:active{filter:brightness(1.25)}
