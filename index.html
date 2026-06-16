@@ -10,16 +10,13 @@
   <header>
     <div>
       <h1>StyleForge Lite</h1>
-      <p>Browser-based Yamaha-style pattern sketchpad — v0.2</p>
+      <p>Mobile-first Yamaha-style pattern sketchpad — v0.3</p>
     </div>
     <div class="header-actions">
       <button id="playBtn">▶ Play</button>
       <button id="stopBtn">■ Stop</button>
       <button id="saveJsonBtn">Save JSON</button>
-      <label class="fileLabel">
-        Load JSON
-        <input type="file" id="loadJsonInput" accept=".json"/>
-      </label>
+      <label class="fileLabel">Load JSON<input type="file" id="loadJsonInput" accept=".json"/></label>
       <button id="exportMidiBtn">Export MIDI</button>
     </div>
   </header>
@@ -27,24 +24,20 @@
   <main>
     <section class="panel settings">
       <h2>Style Settings</h2>
-      <label>Style Name
-        <input id="styleName" value="Test Style"/>
-      </label>
-      <label>Tempo
-        <input id="tempo" type="number" min="40" max="240" value="120"/>
-      </label>
-      <label>Keyboard
-        <select id="keyboardSelect"></select>
-      </label>
-      <label>Section
-        <select id="sectionSelect">
-          <option value="mainA">Main A</option>
-          <option value="mainB">Main B</option>
-          <option value="fillA">Fill A</option>
-          <option value="introA">Intro A</option>
-          <option value="endingA">Ending A</option>
-        </select>
-      </label>
+      <div class="settings-grid">
+        <label>Style Name <input id="styleName" value="Test Style"/></label>
+        <label>Tempo <input id="tempo" type="number" min="40" max="240" value="120"/></label>
+        <label>Keyboard <select id="keyboardSelect"></select></label>
+        <label>Section
+          <select id="sectionSelect">
+            <option value="mainA">Main A</option>
+            <option value="mainB">Main B</option>
+            <option value="fillA">Fill A</option>
+            <option value="introA">Intro A</option>
+            <option value="endingA">Ending A</option>
+          </select>
+        </label>
+      </div>
     </section>
 
     <section class="panel tracks">
@@ -54,12 +47,15 @@
 
     <section class="panel sequencer">
       <div class="sequencer-head">
-        <h2>Drum Grid</h2>
-        <p>4 bars, 16 steps each. Bars alternate shade so your eyes don’t file a complaint.</p>
+        <div>
+          <h2>Drum Grid</h2>
+          <p>Mobile shows one bar at a time. Desktop can breathe wider.</p>
+        </div>
+        <strong id="barIndicator">Bar 1 / 4</strong>
       </div>
       <div class="sequencer-tools">
-        <button id="scrollStartBtn">⏮ Start</button>
-        <button id="scrollEndBtn">End ⏭</button>
+        <button id="scrollStartBtn">◀ Bar</button>
+        <button id="scrollEndBtn">Bar ▶</button>
       </div>
       <div id="grid"></div>
     </section>
@@ -78,21 +74,18 @@
           <option value="phrase2">Phrase 2</option>
         </select>
       </label>
-      <label>Voice
-        <select id="voiceSelect"></select>
-      </label>
+      <label>Voice <select id="voiceSelect"></select></label>
       <button id="applyVoiceBtn">Apply Voice</button>
       <hr/>
-      <button id="clearTrackBtn">Clear Selected Track</button>
-      <button id="demoBtn">Load Demo Beat</button>
-      <p class="hint">Preview uses generic browser synth sounds. Export writes MIDI notes; Yamaha-specific style export comes later.</p>
+      <div class="row-actions">
+        <button id="clearTrackBtn">Clear Track</button>
+        <button id="demoBtn">Load Demo</button>
+      </div>
+      <p class="hint">Preview uses generic browser sounds. Yamaha-specific export comes later.</p>
     </section>
   </main>
 
-  <footer>
-    <span>v0.2: mobile UI + 4-bar shaded grid + MIDI export.</span>
-  </footer>
-
+  <footer>v0.3: mobile-first UI + one-bar sequencer view.</footer>
   <script src="app.js"></script>
 </body>
 </html>
