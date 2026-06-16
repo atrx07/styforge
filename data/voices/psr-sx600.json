@@ -1,0 +1,86 @@
+[
+  {
+    "name": "Standard Kit",
+    "category": "Drums",
+    "msb": 127,
+    "lsb": 0,
+    "pc": 1
+  },
+  {
+    "name": "Room Kit",
+    "category": "Drums",
+    "msb": 127,
+    "lsb": 0,
+    "pc": 9
+  },
+  {
+    "name": "Grand Piano",
+    "category": "Piano",
+    "msb": 0,
+    "lsb": 0,
+    "pc": 1
+  },
+  {
+    "name": "Bright Piano",
+    "category": "Piano",
+    "msb": 0,
+    "lsb": 0,
+    "pc": 2
+  },
+  {
+    "name": "E.Piano",
+    "category": "Piano",
+    "msb": 0,
+    "lsb": 0,
+    "pc": 5
+  },
+  {
+    "name": "Nylon Guitar",
+    "category": "Guitar",
+    "msb": 0,
+    "lsb": 0,
+    "pc": 25
+  },
+  {
+    "name": "Steel Guitar",
+    "category": "Guitar",
+    "msb": 0,
+    "lsb": 0,
+    "pc": 26
+  },
+  {
+    "name": "Finger Bass",
+    "category": "Bass",
+    "msb": 0,
+    "lsb": 0,
+    "pc": 34
+  },
+  {
+    "name": "Pick Bass",
+    "category": "Bass",
+    "msb": 0,
+    "lsb": 0,
+    "pc": 35
+  },
+  {
+    "name": "Strings",
+    "category": "Strings",
+    "msb": 0,
+    "lsb": 0,
+    "pc": 49
+  },
+  {
+    "name": "Warm Pad",
+    "category": "Pad",
+    "msb": 0,
+    "lsb": 0,
+    "pc": 90
+  },
+  {
+    "name": "Brass Section",
+    "category": "Brass",
+    "msb": 0,
+    "lsb": 0,
+    "pc": 62
+  }
+]

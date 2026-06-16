@@ -1,0 +1,320 @@
+:root {
+  --bg: #0d1018;
+  --panel: #171c29;
+  --panel2: #22283a;
+  --text: #f4f6ff;
+  --muted: #aab0c6;
+  --accent: #7c9cff;
+  --border: #30374d;
+  --active: #84ffa8;
+  --barA: #111722;
+  --barB: #1b2231;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top left, #202944, var(--bg));
+  color: var(--text);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(13, 16, 24, 0.92);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+h1, h2, p { margin-top: 0; }
+h1 { margin-bottom: 4px; font-size: 1.45rem; }
+h2 { font-size: 1rem; }
+p { color: var(--muted); }
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+button, .fileLabel {
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  color: var(--text);
+  border-radius: 11px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 42px;
+}
+
+button:hover, .fileLabel:hover {
+  border-color: var(--accent);
+}
+
+.fileLabel input { display: none; }
+
+main {
+  display: grid;
+  grid-template-columns: 230px 250px minmax(480px, 1fr) 260px;
+  gap: 14px;
+  padding: 14px;
+}
+
+.panel {
+  background: rgba(23, 28, 41, 0.96);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+  min-height: 120px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+input, select {
+  width: 100%;
+  background: #0d111b;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 11px;
+  min-height: 42px;
+}
+
+.track {
+  padding: 11px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  background: #101622;
+}
+
+.track.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(124, 156, 255, 0.16);
+}
+
+.track small {
+  color: var(--muted);
+}
+
+.sequencer {
+  padding: 0;
+  overflow: hidden;
+}
+
+.sequencer-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: baseline;
+  padding: 14px 14px 8px;
+}
+
+.sequencer-tools {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 14px 12px;
+}
+
+#grid {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 14px 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.grid-table {
+  display: grid;
+  grid-template-columns: 104px repeat(64, 38px);
+  gap: 5px;
+  align-items: center;
+  min-width: max-content;
+}
+
+.step-label, .bar-label, .drum-label {
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.75rem;
+  user-select: none;
+}
+
+.bar-label {
+  font-weight: 800;
+  color: var(--text);
+  opacity: 0.72;
+}
+
+.drum-label {
+  text-align: left;
+  font-weight: 800;
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: var(--panel);
+  border-radius: 9px;
+  padding: 8px;
+}
+
+.cell {
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.cell.bar-even { background: var(--barA); }
+.cell.bar-odd { background: var(--barB); }
+
+.cell.beat {
+  border-left-color: rgba(244, 246, 255, 0.33);
+}
+
+.cell.on {
+  background: var(--active);
+  box-shadow: 0 0 12px rgba(132,255,168,0.25);
+}
+
+.cell.playing {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.hint {
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+footer {
+  padding: 14px 18px;
+  color: var(--muted);
+}
+
+@media (max-width: 1050px) {
+  body {
+    background: linear-gradient(180deg, #151c2d, var(--bg));
+  }
+
+  header {
+    align-items: flex-start;
+    flex-direction: column;
+    position: static;
+  }
+
+  .header-actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .header-actions button,
+  .header-actions .fileLabel {
+    flex: 1 1 120px;
+    text-align: center;
+  }
+
+  main {
+    grid-template-columns: 1fr;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .panel {
+    border-radius: 14px;
+    padding: 12px;
+  }
+
+  .settings {
+    order: 1;
+  }
+
+  .tracks {
+    order: 2;
+  }
+
+  .sequencer {
+    order: 3;
+  }
+
+  .inspector {
+    order: 4;
+  }
+
+  .tracks #trackList {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .track {
+    min-width: 155px;
+    margin-bottom: 0;
+  }
+
+  .sequencer-head {
+    display: block;
+  }
+
+  .sequencer-head p {
+    font-size: 0.82rem;
+  }
+
+  .grid-table {
+    grid-template-columns: 88px repeat(64, 34px);
+    gap: 5px;
+  }
+
+  .cell {
+    height: 34px;
+    border-radius: 8px;
+  }
+
+  .drum-label {
+    font-size: 0.72rem;
+    padding: 7px 6px;
+  }
+
+  input, select, button, .fileLabel {
+    font-size: 0.86rem;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+  }
+
+  .grid-table {
+    grid-template-columns: 78px repeat(64, 32px);
+    gap: 4px;
+  }
+
+  .cell {
+    height: 32px;
+  }
+
+  .step-label {
+    font-size: 0.68rem;
+  }
+}
