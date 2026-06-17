@@ -11,7 +11,7 @@
   <header>
     <div>
       <h1>StyleForge Lite</h1>
-      <p>Mobile-first Yamaha-style pattern sketchpad — v0.8</p>
+      <p>Mobile-first Yamaha-style pattern sketchpad — v0.9</p>
     </div>
     <div class="header-actions">
       <button id="playBtn">▶ Play</button>
@@ -24,6 +24,7 @@
         </select>
       </label>
       <button id="exportMidiBtn">Export MIDI</button>
+      <button id="exportStyleBtn">Export STY</button>
     </div>
   </header>
   <main>
@@ -47,10 +48,11 @@
       <label>Channel <select id="channelSelect"><option value="rhythm1">Rhythm 1</option><option value="rhythm2">Rhythm 2</option><option value="bass">Bass</option><option value="chord1">Chord 1</option><option value="chord2">Chord 2</option><option value="pad">Pad</option><option value="phrase1">Phrase 1</option><option value="phrase2">Phrase 2</option></select></label>
       <label>Voice <select id="voiceSelect"></select></label><button id="applyVoiceBtn">Apply Voice</button><hr/>
       <div class="row-actions"><button id="clearTrackBtn">Clear Track</button><button id="demoBtn">Load Demo</button></div>
-      <p class="hint">Bass, Chord, Pad and Phrase tracks now use piano roll.</p>
+      <p class="hint">Experimental STY export creates a first-pass Yamaha style test file.</p>
     </section>
   </main>
-  <footer>v0.8: piano roll enabled for chord, pad and phrase tracks.</footer>
+  <footer>v0.9: experimental STY export test.</footer>
   <script src="app.js?v=0.8"></script>
+  <script src="sty-export.js?v=0.9"></script>
 </body>
 </html>
