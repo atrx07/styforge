@@ -11,13 +11,18 @@
   <header>
     <div>
       <h1>StyleForge Lite</h1>
-      <p>Mobile-first Yamaha-style pattern sketchpad — v0.6.2</p>
+      <p>Mobile-first Yamaha-style pattern sketchpad — v0.7</p>
     </div>
     <div class="header-actions">
       <button id="playBtn">▶ Play</button>
-      <button id="stopBtn">■ Stop</button>
       <button id="saveJsonBtn">Save JSON</button>
       <label class="fileLabel">Load JSON<input type="file" id="loadJsonInput" accept=".json"/></label>
+      <label class="miniLabel">Export
+        <select id="exportMode">
+          <option value="section">Whole Section</option>
+          <option value="track">Selected Track</option>
+        </select>
+      </label>
       <button id="exportMidiBtn">Export MIDI</button>
     </div>
   </header>
@@ -89,11 +94,11 @@
         <button id="clearTrackBtn">Clear Track</button>
         <button id="demoBtn">Load Demo</button>
       </div>
-      <p class="hint">Bass keys preview notes. Grid cells place/remove 16th notes.</p>
+      <p class="hint">Bass keys preview notes. Export can save selected track or whole section.</p>
     </section>
   </main>
 
-  <footer>v0.6.2: bass fill, scroll preserve, key audition.</footer>
-  <script src="app.js?v=0.6.2"></script>
+  <footer>v0.7: export modes + single play button + tighter audio scheduling.</footer>
+  <script src="app.js?v=0.7"></script>
 </body>
 </html>
