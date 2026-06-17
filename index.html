@@ -11,7 +11,7 @@
   <header>
     <div>
       <h1>StyleForge Lite</h1>
-      <p>Mobile-first Yamaha-style pattern sketchpad — v0.7</p>
+      <p>Mobile-first Yamaha-style pattern sketchpad — v0.8</p>
     </div>
     <div class="header-actions">
       <button id="playBtn">▶ Play</button>
@@ -26,79 +26,31 @@
       <button id="exportMidiBtn">Export MIDI</button>
     </div>
   </header>
-
   <main>
     <section class="panel settings">
       <h2>Style Settings</h2>
       <div class="settings-grid">
         <label>Style Name <input id="styleName" value="Test Style"/></label>
         <label>Tempo <input id="tempo" type="number" min="40" max="240" value="120"/></label>
-        <label>Bars
-          <select id="barsSelect">
-            <option value="1" selected>1 bar</option>
-            <option value="2">2 bars</option>
-            <option value="4">4 bars</option>
-          </select>
-        </label>
+        <label>Bars <select id="barsSelect"><option value="1" selected>1 bar</option><option value="2">2 bars</option><option value="4">4 bars</option></select></label>
         <label>Keyboard <select id="keyboardSelect"></select></label>
-        <label>Section
-          <select id="sectionSelect">
-            <option value="mainA">Main A</option>
-            <option value="mainB">Main B</option>
-            <option value="fillA">Fill A</option>
-            <option value="introA">Intro A</option>
-            <option value="endingA">Ending A</option>
-          </select>
-        </label>
+        <label>Section <select id="sectionSelect"><option value="mainA">Main A</option><option value="mainB">Main B</option><option value="fillA">Fill A</option><option value="introA">Intro A</option><option value="endingA">Ending A</option></select></label>
       </div>
     </section>
-
-    <section class="panel tracks">
-      <h2>Tracks</h2>
-      <div id="trackList"></div>
-    </section>
-
+    <section class="panel tracks"><h2>Tracks</h2><div id="trackList"></div></section>
     <section class="panel sequencer">
-      <div class="sequencer-head">
-        <div>
-          <h2 id="editorTitle">Drum Grid</h2>
-          <p id="editorHelp">Each beat has its own shade. Select Bass for piano roll.</p>
-        </div>
-        <strong id="barIndicator">Bar 1 / 1</strong>
-      </div>
-      <div class="sequencer-tools" id="barTools">
-        <button id="scrollStartBtn">◀ Bar</button>
-        <button id="scrollEndBtn">Bar ▶</button>
-      </div>
-      <div id="grid"></div>
+      <div class="sequencer-head"><div><h2 id="editorTitle">Drum Grid</h2><p id="editorHelp">Rhythm tracks use drum grid. Melodic tracks use piano roll.</p></div><strong id="barIndicator">Bar 1 / 1</strong></div>
+      <div class="sequencer-tools" id="barTools"><button id="scrollStartBtn">◀ Bar</button><button id="scrollEndBtn">Bar ▶</button></div><div id="grid"></div>
     </section>
-
     <section class="panel inspector">
       <h2>Selected Track</h2>
-      <label>Channel
-        <select id="channelSelect">
-          <option value="rhythm1">Rhythm 1</option>
-          <option value="rhythm2">Rhythm 2</option>
-          <option value="bass">Bass</option>
-          <option value="chord1">Chord 1</option>
-          <option value="chord2">Chord 2</option>
-          <option value="pad">Pad</option>
-          <option value="phrase1">Phrase 1</option>
-          <option value="phrase2">Phrase 2</option>
-        </select>
-      </label>
-      <label>Voice <select id="voiceSelect"></select></label>
-      <button id="applyVoiceBtn">Apply Voice</button>
-      <hr/>
-      <div class="row-actions">
-        <button id="clearTrackBtn">Clear Track</button>
-        <button id="demoBtn">Load Demo</button>
-      </div>
-      <p class="hint">Bass keys preview notes. Export can save selected track or whole section.</p>
+      <label>Channel <select id="channelSelect"><option value="rhythm1">Rhythm 1</option><option value="rhythm2">Rhythm 2</option><option value="bass">Bass</option><option value="chord1">Chord 1</option><option value="chord2">Chord 2</option><option value="pad">Pad</option><option value="phrase1">Phrase 1</option><option value="phrase2">Phrase 2</option></select></label>
+      <label>Voice <select id="voiceSelect"></select></label><button id="applyVoiceBtn">Apply Voice</button><hr/>
+      <div class="row-actions"><button id="clearTrackBtn">Clear Track</button><button id="demoBtn">Load Demo</button></div>
+      <p class="hint">Bass, Chord, Pad and Phrase tracks now use piano roll.</p>
     </section>
   </main>
-
-  <footer>v0.7: export modes + single play button + tighter audio scheduling.</footer>
-  <script src="app.js?v=0.7"></script>
+  <footer>v0.8: piano roll enabled for chord, pad and phrase tracks.</footer>
+  <script src="app.js?v=0.8"></script>
 </body>
 </html>
