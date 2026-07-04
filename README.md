@@ -2,7 +2,7 @@
 
 Mobile-first Yamaha-style pattern sketchpad and experimental `.sty` exporter.
 
-Current app version: **v1.2.0 experimental**
+Current app version: **v1.2.1 experimental**
 
 StyleForge Lite started as a phone-friendly MIDI/style sequencer and is currently focused on Yamaha arranger-style experiments, especially PSR-E and PSR-SX style workflows.
 
@@ -46,29 +46,44 @@ StyleForge Lite started as a phone-friendly MIDI/style sequencer and is currentl
   - Fill A, B, C, D
   - Intro A, B, C
   - Ending A, B, C
-- Template-based experimental STY export
-- Built-in Yamaha official `template.MID` export mode
-- Uploaded working `.sty` skeleton export mode
+- Built-in PSR-E export base
+- Uploaded working `.sty` fallback mode
 - Project tempo overwrite during STY export
 - Export status/debug line showing note counts after STY export
 
 ## STY export modes
 
-### 1. Official Yamaha Template mode
+### 1. Built-in PSR-E Mapping
 
-This mode uses the official Yamaha `template.MID` internally.
+This is now the default mode.
 
-It does not require the user to upload a `.sty` skeleton.
+It generates a PSR-E oriented SFF1 style base directly inside the browser with:
 
-This is cleaner and closer to Yamaha's documented old workflow: fill a template MIDI file, then export/rename it as a style.
+- PPQ 192
+- SFF1 and SInt markers
+- PSR-E A/B section map
+- `fn:` section text events
+- a generated CASM channel map
+- Yamaha/XG setup events
 
-This mode is still experimental and needs hardware testing.
+StyleForge maps tracks like this:
+
+- Drums → MIDI channel 10
+- Bass → MIDI channel 11
+- Chords 1 → MIDI channel 12
+- Chords 2 → MIDI channel 13
+- Pad → MIDI channel 14
+- Phrases → MIDI channel 15
+
+This avoids needing to import PIANOBAL or another working file every time.
+
+This mode still needs real PSR-E hardware testing.
 
 ### 2. Uploaded STY Skeleton mode
 
-This mode uses a known-working Yamaha `.sty` file as a hard skeleton and swaps MIDI note data into that template.
+This remains as fallback.
 
-This preserves the uploaded template's Yamaha-specific structure such as CASM/style metadata while replacing musical pattern data.
+It uses a known-working Yamaha `.sty` file and swaps only note data while preserving setup events, section markers, and the original style tail.
 
 Typical flow:
 
@@ -90,10 +105,18 @@ Known rough edges:
 - PSR-E and PSR-SX models may validate styles differently.
 - iPhone WebAudio preview may be unreliable.
 - Exported STY files should be tested on real hardware.
+- Built-in mode may still need tuning if PSR-E rejects the generated CASM.
 - Uploaded skeleton mode depends heavily on the loaded template's internal structure.
-- Official template mode may need extra Yamaha style metadata for newer models.
 
 ## Recent version notes
+
+### v1.2.1
+
+- Removed the failed official MIDI-template export path.
+- Added a generated built-in PSR-E mapping export path.
+- Added generated PSR-E SFF1 markers, `fn:` text events, setup events, and CASM channel mapping.
+- Changed exporter to preserve non-note setup events and strip only old note events.
+- Kept uploaded `.sty` mode as fallback.
 
 ### v1.2.0
 
@@ -110,20 +133,6 @@ Known rough edges:
 - Fill A→B is injected into `Fill In AA` and `Fill In AB` when present.
 - Fill B→A is injected into `Fill In BA` and `Fill In BB` when present.
 - Added export debug counts in the template status area.
-
-### v1.1.x
-
-- Added STY template loading.
-- Added hard skeleton export mode.
-- Added project tempo overwrite.
-- Added visible template filename/status.
-- Added separate PSR-E Fill B→A editor.
-
-### v1.0.x
-
-- Added PSR-E Series keyboard profile.
-- Added experimental STY export attempts.
-- Added full-project export fixes.
 
 ## Run locally
 
@@ -152,6 +161,6 @@ Experimental but promising.
 The current direction is:
 
 - Keep the UI mobile-first.
-- Test official Yamaha template mode on real hardware.
+- Test built-in PSR-E mapping mode on real hardware.
 - Keep uploaded skeleton mode as fallback for stricter keyboards.
-- Gradually replace template dependency with cleaner generated style chunks later.
+- Gradually replace reverse-engineered assumptions with verified Yamaha behavior.
