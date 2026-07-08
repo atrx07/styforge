@@ -116,6 +116,8 @@ Known rough edges:
 - Added a generated built-in PSR-E mapping export path.
 - Added generated PSR-E SFF1 markers, `fn:` text events, setup events, and CASM channel mapping.
 - Changed exporter to preserve non-note setup events and strip only old note events.
+- Aligned the built-in PSR-E CASM with the lean two-CSEG structure seen in working PSR-E styles, including both Yamaha rhythm channels.
+- Cleaned up the STY mode value so the UI uses `builtin-psre` directly; the old `official` value remains accepted as a compatibility alias.
 - Kept uploaded `.sty` mode as fallback.
 
 ### v1.2.0

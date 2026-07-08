@@ -158,7 +158,7 @@ function createDefaultProject() {
   ALL_SECTION_IDS.forEach(id => sections[id] = makeSection());
   return {
     app: "StyleForge Lite",
-    version: "1.2.0",
+    version: "1.2.1",
     name: "Test Style",
     tempo: 120,
     barCount: BAR_COUNT,
