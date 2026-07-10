@@ -1,114 +1,187 @@
 # StyleForge Lite
 
-Mobile-first Yamaha-style pattern sketchpad and experimental `.sty` exporter.
+StyleForge Lite is a static, mobile-first Yamaha arranger style sketchpad. It lets you build simple drum and accompaniment patterns in the browser, preview them with WebAudio, save/load projects as JSON, export MIDI, and experiment with Yamaha `.STY` style export for PSR-E and related arranger keyboards.
 
 Current app version: **v1.2.2 experimental**
 
-StyleForge Lite started as a phone-friendly MIDI/style sequencer and is currently focused on Yamaha arranger-style experiments, especially PSR-E and PSR-SX style workflows.
+## Quick Start
 
-## What works right now
+Run from the project folder with any static file server:
+
+```bash
+python -m http.server 8080
+```
+
+Open:
+
+```text
+http://127.0.0.1:8080
+```
+
+No backend, package install, or build step is required. The app is designed for static hosts such as Cloudflare Pages.
+
+## Main Files
+
+- `index.html` - app shell and controls
+- `styles.css` - main mobile-first layout and visual styling
+- `bass-fix.css` - targeted editor styling fixes
+- `app.js` - project model, sequencer UI, preview audio, JSON, and MIDI export
+- `sty-export.js` - experimental Yamaha `.STY` export logic
+- `data/voices/psr-sx600.json` - voice list
+- `data/drum-maps/yamaha-xg.json` - Yamaha/XG drum map data
+
+## What Works
 
 - Mobile-friendly sequencer UI
 - Drum grid editor
-- Piano-roll style editor for melodic tracks
-- 1, 2, or 4 bar project lengths
+- Piano-roll editor for bass, chords, pad, and phrase tracks
+- 1, 2, or 4 bar pattern lengths
+- Style name, tempo, keyboard profile, and section selection
 - Project save/load as JSON
-- MIDI export
-- Keyboard profiles:
-  - PSR-E Series
-  - PSR-SX600
-  - Generic XG
-- PSR-E Series track layout:
-  - Drums
-  - Bass
-  - Chords 1
-  - Chords 2
-  - Pad
-  - Phrases
-- PSR-SX600 / Generic XG track layout:
-  - Rhythm 1
-  - Rhythm 2
-  - Bass
-  - Chord 1
-  - Chord 2
-  - Pad
-  - Phrase 1
-  - Phrase 2
-- PSR-E section layout:
-  - Main A
-  - Main B
-  - Fill A→B
-  - Fill B→A
-  - Intro A
-  - Ending A
-- PSR-SX / Generic section layout:
-  - Main A, B, C, D
-  - Fill A, B, C, D
-  - Intro A, B, C
-  - Ending A, B, C
-- Built-in PSR-E export base
-- Uploaded working `.sty` fallback mode
-- Project tempo overwrite during STY export
-- Export status/debug line showing note counts after STY export
+- In-browser WebAudio preview
+- MIDI export for the whole section or selected track
+- Experimental Yamaha `.STY` export
 
-## STY export modes
+## Keyboard Profiles
 
-### 1. Built-in PSR-E Mapping
+### PSR-E Series
 
-This is now the default mode.
+Primary target profile.
 
-It generates a PSR-E oriented SFF1 style base directly inside the browser with:
+Tracks:
 
+- Drums
+- Bass
+- Chords 1
+- Chords 2
+- Pad
+- Phrases
+
+Sections:
+
+- Main A
+- Main B
+- Fill A to B
+- Fill B to A
+- Intro A
+- Ending A
+
+### PSR-SX600 / Generic XG
+
+Broader arranger-style profile for testing.
+
+Tracks:
+
+- Rhythm 1
+- Rhythm 2
+- Bass
+- Chord 1
+- Chord 2
+- Pad
+- Phrase 1
+- Phrase 2
+
+Sections:
+
+- Main A, B, C, D
+- Fill A, B, C, D
+- Intro A, B, C
+- Ending A, B, C
+
+## Export Modes
+
+### MIDI Export
+
+MIDI export is the simple and stable path. It writes either:
+
+- the current section, or
+- the selected track
+
+This is useful for checking note data in a DAW or another MIDI utility.
+
+### Built-in PSR-E Mapping
+
+This is the default `.STY` export path.
+
+The browser generates a PSR-E oriented SFF1 style base with:
+
+- MIDI format 0
 - PPQ 192
 - SFF1 and SInt markers
-- PSR-E A/B section map
+- PSR-E A/B section markers
 - `fn:` section text events
-- a generated CASM channel map
 - Yamaha/XG setup events
+- generated CASM data
 
-StyleForge maps tracks like this:
+StyleForge maps PSR-E tracks to MIDI channels like this:
 
-- Drums → MIDI channel 10
-- Bass → MIDI channel 11
-- Chords 1 → MIDI channel 12
-- Chords 2 → MIDI channel 13
-- Pad → MIDI channel 14
-- Phrases → MIDI channel 15
+- Drums -> MIDI channel 10
+- Bass -> MIDI channel 11
+- Chords 1 -> MIDI channel 12
+- Chords 2 -> MIDI channel 13
+- Pad -> MIDI channel 14
+- Phrases -> MIDI channel 15
 
-This avoids needing to import PIANOBAL or another working file every time.
+Recent hardware testing showed this built-in path can produce a smaller `.STY` file where all StyleForge channels play.
 
-This mode still needs real PSR-E hardware testing.
+### Uploaded STY Skeleton
 
-### 2. Uploaded STY Skeleton mode
+This fallback mode uses a known-working Yamaha `.STY` file as the style skeleton.
 
-This remains as fallback.
+The exporter removes old note events and injects StyleForge notes while preserving:
 
-It uses a known-working Yamaha `.sty` file and swaps only note data while preserving setup events, section markers, and the original style tail.
+- program changes
+- bank select
+- control changes
+- SysEx/setup events
+- markers
+- `fn:` text events
+- the original CASM tail
 
-Typical flow:
+This mode is useful because it preserves a real Yamaha style structure. It also follows that skeleton's CASM channel rules. If the normal StyleForge channel is not exposed for a section, the exporter remaps the notes to a valid section Ctab and reports the remap in the export status line.
+
+## Yamaha STY Notes
+
+Yamaha `.STY` export is still experimental. The important discovery so far is that simple MIDI markers are not enough.
+
+Working PSR-E style files usually contain:
+
+- MIDI format 0
+- PPQ 192
+- Yamaha section markers
+- `fn:` text events
+- setup/controller/program events
+- a CASM chunk after `MTrk`
+
+CASM is the important "style brain." It describes which channels belong to which sections and how those channels respond to chord changes.
+
+## Known Limitations
+
+- Yamaha style validation is strict and model-dependent.
+- Built-in CASM is reverse engineered and still needs more hardware testing.
+- Uploaded skeleton exports depend on the skeleton's internal CASM mapping.
+- Some skeletons may force remaps or shared section parts when they expose fewer usable Ctabs than StyleForge tracks.
+- WebAudio preview is only a sketching aid and may behave differently across browsers, especially on iPhone.
+- Exported `.STY` files should be tested on real hardware.
+
+## Typical Workflow
 
 1. Open StyleForge Lite.
-2. Choose **Uploaded STY Skeleton** mode.
-3. Load a known-working `.sty` file as template.
-4. Build patterns in StyleForge.
-5. Export STY.
-6. Test on keyboard.
+2. Pick the PSR-E Series profile.
+3. Choose a section such as Main A or Main B.
+4. Add drum and accompaniment notes.
+5. Preview in the browser.
+6. Save the project as JSON when needed.
+7. Export MIDI for inspection or `.STY` for keyboard testing.
 
-## Important experimental notes
+For uploaded skeleton testing:
 
-This project is still in active reverse-engineering / trial-and-error mode.
+1. Choose **Uploaded STY Skeleton** mode.
+2. Load a known-working `.STY` file such as a PSR-E style.
+3. Export and test on hardware.
+4. Check the export status line for CASM channel remaps before testing on hardware.
 
-Known rough edges:
-
-- Yamaha `.sty` internals are picky.
-- Some templates may behave differently depending on their section markers.
-- PSR-E and PSR-SX models may validate styles differently.
-- iPhone WebAudio preview may be unreliable.
-- Exported STY files should be tested on real hardware.
-- Built-in mode may still need tuning if PSR-E rejects the generated CASM.
-- Uploaded skeleton mode depends heavily on the loaded template's internal structure.
-
-## Recent version notes
+## Recent Version Notes
 
 ### v1.2.2
 
@@ -125,7 +198,7 @@ Known rough edges:
 - Changed exporter to preserve non-note setup events and strip only old note events.
 - Aligned the built-in PSR-E CASM with the lean two-CSEG structure seen in working PSR-E styles, including both Yamaha rhythm channels.
 - Cleaned up the STY mode value so the UI uses `builtin-psre` directly; the old `official` value remains accepted as a compatibility alias.
-- Kept uploaded `.sty` mode as fallback.
+- Kept uploaded `.STY` mode as fallback.
 
 ### v1.2.0
 
@@ -139,37 +212,13 @@ Known rough edges:
 ### v1.1.9
 
 - Added robust PSR-E fill slot export.
-- Fill A→B is injected into `Fill In AA` and `Fill In AB` when present.
-- Fill B→A is injected into `Fill In BA` and `Fill In BB` when present.
+- Fill A to B is injected into `Fill In AA` and `Fill In AB` when present.
+- Fill B to A is injected into `Fill In BA` and `Fill In BB` when present.
 - Added export debug counts in the template status area.
 
-## Run locally
+## Project Direction
 
-This is a static site. Any simple local web server works.
-
-```bash
-python -m http.server 8080
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8080
-```
-
-## Deployment
-
-The project is designed to work on static hosting such as Cloudflare Pages.
-
-No backend is required for the current workflow.
-
-## Project status
-
-Experimental but promising.
-
-The current direction is:
-
-- Keep the UI mobile-first.
-- Test built-in PSR-E mapping mode on real hardware.
-- Keep uploaded skeleton mode as fallback for stricter keyboards.
-- Gradually replace reverse-engineered assumptions with verified Yamaha behavior.
+- Keep the app mobile-first and static-host friendly.
+- Improve generated PSR-E `.STY` export until it no longer needs a user-supplied skeleton.
+- Keep uploaded skeleton mode as a fallback for stricter keyboards.
+- Replace reverse-engineered assumptions with verified behavior from working Yamaha style files and hardware tests.
