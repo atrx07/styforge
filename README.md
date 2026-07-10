@@ -2,7 +2,7 @@
 
 Mobile-first Yamaha-style pattern sketchpad and experimental `.sty` exporter.
 
-Current app version: **v1.2.1 experimental**
+Current app version: **v1.2.2 experimental**
 
 StyleForge Lite started as a phone-friendly MIDI/style sequencer and is currently focused on Yamaha arranger-style experiments, especially PSR-E and PSR-SX style workflows.
 
@@ -109,6 +109,13 @@ Known rough edges:
 - Uploaded skeleton mode depends heavily on the loaded template's internal structure.
 
 ## Recent version notes
+
+### v1.2.2
+
+- Added CASM-aware channel injection for uploaded skeleton mode.
+- Uploaded skeleton exports now prefer the normal StyleForge channel, then remap notes to a valid section Ctab when the skeleton does not expose that channel.
+- Preserved the uploaded skeleton CASM tail byte-for-byte; only injected note channels are adjusted.
+- Added export debug text for channel remaps such as `Phrases ch15->5`.
 
 ### v1.2.1
 
