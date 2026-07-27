@@ -1,0 +1,186 @@
+# StyleForge Lite Status
+
+Current checkpoint: **v1.2.2 experimental**
+
+Last reviewed: **2026-07-27**
+
+## Marking Guide
+
+- `[x]` Complete and verified at the stated level.
+- `[~]` Implemented or demonstrated, with more verification needed.
+- `[ ]` Planned.
+- `[!]` Blocked by a known dependency or missing evidence.
+
+Hardware verification is marked separately from code completion. A structurally
+valid file is not automatically a keyboard-compatible file.
+
+## Maintenance Rule
+
+Every repository change must update this file in the same atomic commit. Update
+the affected checkpoint when its state changes; otherwise add a dated entry to
+the change log below.
+
+## Change Log
+
+### 2026-07-27
+
+- [x] Added contributor, product, architecture, and roadmap documentation.
+- [x] Changed the repository workflow to verified commits and pushes directly
+  on `main`.
+- [x] Made a `STATUS.md` update mandatory for every repository change.
+
+## Product Checkpoints
+
+### 1. Static App Foundation
+
+- [x] Runs from a static file server with no build step.
+- [x] Mobile-first application shell and controls.
+- [x] PSR-E and SX/Generic profile selectors.
+- [x] One, two, and four bar project lengths.
+- [x] Cloudflare Pages-compatible project shape.
+
+### 2. Pattern Editing
+
+- [x] Drum-grid editing.
+- [x] Piano-roll editing for melodic parts.
+- [x] Section and track selection.
+- [x] Pitch, start, duration, and velocity project data.
+- [x] Basic voice selection.
+- [~] Cross-browser and small-screen interaction matrix.
+- [ ] Editing ergonomics pass for dense four-bar patterns.
+
+### 3. Project And Preview
+
+- [x] JSON project save.
+- [x] JSON project load and migration of missing fields.
+- [x] WebAudio drum and melodic preview.
+- [x] Play and stop scheduling.
+- [~] iPhone audio-start and sustained-session reliability.
+- [ ] Automated JSON round-trip tests.
+
+### 4. Standard MIDI Export
+
+- [x] Whole-section MIDI export.
+- [x] Selected-track MIDI export.
+- [~] Repeatable parser-based validation of emitted files.
+- [ ] Automated timing, channel, and end-of-track fixture tests.
+
+### 5. Uploaded STY Skeleton Export
+
+- [x] Load a working `.STY` or MIDI-style base in the browser.
+- [x] Remove old Note On and Note Off events only.
+- [x] Preserve setup, controller, program, SysEx, marker, and text events.
+- [x] Preserve the original CASM tail byte-for-byte.
+- [x] Read section Ctabs and remap injected tracks to available channels.
+- [x] Report channel remaps in the export status.
+- [~] Verify behavior against a wider range of legally usable style samples.
+- [~] Confirm all StyleForge parts across multiple PSR-E keyboard models.
+
+Known result: a PIANOBAL-derived uploaded export loaded and played, but its
+phrase availability depended on the skeleton's CASM channel coverage. The
+CASM-aware remapping code addresses this class of mismatch; broader hardware
+verification remains open.
+
+### 6. Built-in PSR-E Export
+
+- [x] Generate MIDI format 0 with PPQ 192.
+- [x] Generate one MTrk with SFF1 and SInt markers.
+- [x] Generate PSR-E section markers and matching `fn:` text.
+- [x] Generate Yamaha/XG setup, controller, bank, and program events.
+- [x] Generate CASM with CSEG, Sdec, and Ctab chunks.
+- [x] Describe both Yamaha rhythm channels and StyleForge accompaniment parts.
+- [x] Inject all six PSR-E StyleForge tracks on CASM-described channels.
+- [x] Hardware proof: a built-in export loaded with all authored channels
+  working in the reported PSR-E test.
+- [~] Verify chord-following behavior across chord types and inversions.
+- [~] Verify every main, fill, intro, and ending transition on hardware.
+- [~] Repeat tests on multiple PSR-E models and firmware versions.
+- [ ] Replace reverse-engineered Ctab assumptions with documented fixture tests.
+
+### 7. Quality And Release Readiness
+
+- [x] Contributor workflow and architecture documentation.
+- [ ] Automated binary parser/export test harness.
+- [ ] Synthetic, redistributable SFF1/CASM fixtures.
+- [ ] Browser smoke-test checklist or automation.
+- [ ] Hardware compatibility result template and test matrix.
+- [ ] User-facing export diagnostics beyond the current status line.
+- [ ] Versioned release checklist.
+
+## Roadmap
+
+### Milestone A: Reliable PSR-E Core
+
+Status: `[~]`
+
+Exit criteria:
+
+- Built-in export works across the supported sections and six track roles.
+- Bass, chord, pad, and phrase parts follow common chord types correctly.
+- Binary structure has automated regression coverage.
+- Results are recorded on more than one PSR-E model.
+
+### Milestone B: Editing Confidence
+
+Status: `[~]`
+
+Exit criteria:
+
+- JSON round trips and MIDI export have automated checks.
+- Four-bar editing is practical on phone and desktop.
+- Preview start/stop is reliable on current mobile browsers.
+- Error states for loading and exporting are clear.
+
+### Milestone C: Broader Yamaha Compatibility
+
+Status: `[ ]`
+
+Exit criteria:
+
+- SX/Generic section and channel behavior is specified.
+- SFF1/SFF2 scope is decided from inspected files and target hardware.
+- Additional keyboard profiles have fixtures and hardware results.
+- Model-specific behavior is represented explicitly rather than guessed.
+
+### Milestone D: Stable Lite Release
+
+Status: `[ ]`
+
+Exit criteria:
+
+- Primary PSR-E workflow has no known data-loss or silent-export failures.
+- Compatibility claims match the recorded hardware matrix.
+- Static deployment, documentation, and release checks are repeatable.
+- Experimental labels are removed only for the verified support surface.
+
+## Next Verified Successes
+
+Keep these tasks atomic and update the markings after each verified result:
+
+1. Add a small Node-compatible structural validator for exported MIDI/STY bytes.
+2. Add synthetic fixtures for marker parsing, note-only removal, and CASM-tail
+   preservation.
+3. Record built-in export tests for Main A, Main B, both fills, Intro A, and
+   Ending A on the current PSR-E test keyboard.
+4. Test major, minor, seventh, and common inversion behavior for each melodic
+   part.
+5. Create a hardware matrix containing keyboard model, firmware when known,
+   export mode, section, track, chord behavior, and result.
+
+## Checkpoint Update Template
+
+Use this block when recording a compatibility result:
+
+```text
+Date:
+App commit/version:
+Keyboard model:
+Firmware:
+Export mode:
+Source project or synthetic fixture:
+Sections tested:
+Tracks tested:
+Chord types tested:
+Result:
+Observed limitations:
+```
