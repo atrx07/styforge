@@ -30,6 +30,13 @@ No backend, package install, or build step is required. The app is designed for 
 - `data/voices/psr-sx600.json` - voice list
 - `data/drum-maps/yamaha-xg.json` - Yamaha/XG drum map data
 
+## Project Documentation
+
+- [`PROJECT.md`](PROJECT.md) - product vision, scope, and success criteria
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) - runtime, data model, and export design
+- [`STATUS.md`](STATUS.md) - roadmap checkpoints and verification status
+- [`AGENTS.md`](AGENTS.md) - contributor, testing, Git, and validation rules
+
 ## What Works
 
 - Mobile-friendly sequencer UI
