@@ -14,6 +14,21 @@ Last reviewed: **2026-07-27**
 Hardware verification is marked separately from code completion. A structurally
 valid file is not automatically a keyboard-compatible file.
 
+## Maintenance Rule
+
+Every repository change must update this file in the same atomic commit. Update
+the affected checkpoint when its state changes; otherwise add a dated entry to
+the change log below.
+
+## Change Log
+
+### 2026-07-27
+
+- [x] Added contributor, product, architecture, and roadmap documentation.
+- [x] Changed the repository workflow to verified commits and pushes directly
+  on `main`.
+- [x] Made a `STATUS.md` update mandatory for every repository change.
+
 ## Product Checkpoints
 
 ### 1. Static App Foundation
@@ -169,4 +184,3 @@ Chord types tested:
 Result:
 Observed limitations:
 ```
-

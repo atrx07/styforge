@@ -21,21 +21,20 @@ Prefer focused changes that fit the current plain HTML, CSS, and JavaScript
 architecture. Do not rewrite the app or add a framework unless a requirement
 cannot be met reasonably with the existing structure.
 
-## Branch And Pull Request Rules
+## Branch And Push Rules
 
-All work must be performed on `codex-updates`.
+All work must be performed directly on `main`.
 
 Before editing:
 
 1. Run `git branch --show-current`.
-2. If necessary, fetch `origin` and switch to `codex-updates`.
-3. If the branch exists only on the remote, create the local tracking branch.
-4. If it does not exist anywhere, create it from the latest `main`.
+2. Run `git fetch origin`.
+3. Switch to `main` if necessary.
+4. Run `git pull --ff-only origin main`.
 5. Confirm the worktree state with `git status --short --branch`.
 
-Never commit or push directly to `main`. Push only to
-`origin/codex-updates`. Keep using the existing pull request from
-`codex-updates` to `main`; create one only when none exists.
+Do not create or use another branch unless the user explicitly asks for one.
+Commit verified changes directly to `main` and push only to `origin main`.
 
 ## Atomic Verified Successes
 
@@ -45,12 +44,12 @@ Treat each independently useful, verified result as one atomic change:
 2. Run the checks appropriate to that change.
 3. Review `git diff` and confirm no unrelated files are included.
 4. Commit only that verified change with a specific message.
-5. Push the commit immediately to `origin codex-updates`.
+5. Include the corresponding `STATUS.md` update in the same commit.
+6. Push the commit immediately to `origin main`.
 
 Do not hold several unrelated successful changes for one large commit or push.
 Do not commit a known failing state. If work is incomplete, keep it uncommitted
-until it passes its relevant checks or clearly mark a deliberate diagnostic
-commit in the pull request.
+until it passes its relevant checks.
 
 Documentation-only changes may be one atomic commit after link, spelling, and
 accuracy checks. A code change and the documentation that describes that same
@@ -139,14 +138,14 @@ redistribution rights are clear. Prefer synthetic fixtures for automated tests.
 
 ## Version And Documentation Discipline
 
-When behavior changes:
+For every change:
 
 - Update the visible version and cache-busting query strings together when a
   release version is intentionally advanced.
 - Keep `README.md`, `PROJECT.md`, `ARCHITECTURE.md`, and `STATUS.md` consistent
   with the implementation.
-- Update `STATUS.md` after a checkpoint is verified, including hardware evidence
-  when applicable.
-- Explain binary format assumptions and compatibility tradeoffs in the pull
-  request.
-
+- Update `STATUS.md` in the same atomic commit. Mark the affected checkpoint or
+  add a dated change-log entry when no roadmap checkbox changes.
+- Include hardware evidence in `STATUS.md` when applicable.
+- Explain binary format assumptions and compatibility tradeoffs in the commit
+  message or accompanying documentation.
