@@ -158,7 +158,7 @@ function createDefaultProject() {
   ALL_SECTION_IDS.forEach(id => sections[id] = makeSection());
   return {
     app: "StyleForge Lite",
-    version: "1.2.2",
+    version: "1.2.3",
     name: "Test Style",
     tempo: 120,
     barCount: BAR_COUNT,
@@ -206,6 +206,7 @@ function bindUI() {
     project.keyboard = e.target.value;
     if (!activeTrackIds().includes(selectedTrackId)) selectedTrackId = activeTrackIds()[0];
     renderAll();
+    if (typeof syncStyleExportProfile === "function") syncStyleExportProfile();
   };
   sectionSelect.onchange = () => { activeBar = 0; renderAll(); };
   barsSelect.onchange = e => setBarCount(Number(e.target.value));
@@ -538,7 +539,7 @@ function loadProjectJson(e) {
   const file = e.target.files[0]; if (!file) return;
   const reader = new FileReader();
   reader.onload = () => {
-    try { project = JSON.parse(reader.result); selectedTrackId = "rhythm1"; activeBar = 0; renderAll(); }
+    try { project = JSON.parse(reader.result); selectedTrackId = "rhythm1"; activeBar = 0; renderAll(); if (typeof syncStyleExportProfile === "function") syncStyleExportProfile(); }
     catch { alert("Could not load project JSON."); }
   };
   reader.readAsText(file);

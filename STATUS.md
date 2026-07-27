@@ -1,6 +1,6 @@
 # StyleForge Lite Status
 
-Current checkpoint: **v1.2.2 experimental**
+Current checkpoint: **v1.2.3 experimental**
 
 Last reviewed: **2026-07-27**
 
@@ -28,6 +28,12 @@ the change log below.
 - [x] Changed the repository workflow to verified commits and pushes directly
   on `main`.
 - [x] Made a `STATUS.md` update mandatory for every repository change.
+- [x] Inspected two user-provided PSR-SX SFF2 sources locally; both use PPQ
+  1920, `Ctb2` CASM tables, four main/fill slots, and three intro/ending slots.
+- [x] Added PSR-SX600 uploaded SFF2 `.sty`/`.prs` export support, including
+  `Ctb2` channel mapping and SX marker validation.
+- [~] PSR-SX600 export has structural reference-file validation only; hardware
+  loading, transitions, and chord behaviour have not yet been tested.
 
 ## Product Checkpoints
 
@@ -65,7 +71,7 @@ the change log below.
 - [~] Repeatable parser-based validation of emitted files.
 - [ ] Automated timing, channel, and end-of-track fixture tests.
 
-### 5. Uploaded STY Skeleton Export
+### 5. Uploaded Yamaha Skeleton Export
 
 - [x] Load a working `.STY` or MIDI-style base in the browser.
 - [x] Remove old Note On and Note Off events only.
@@ -73,6 +79,10 @@ the change log below.
 - [x] Preserve the original CASM tail byte-for-byte.
 - [x] Read section Ctabs and remap injected tracks to available channels.
 - [x] Report channel remaps in the export status.
+- [x] Read SFF2 `Ctb2` channel tables from uploaded PSR-SX `.sty` and `.prs`
+  bases.
+- [x] Validate the PSR-SX600 SFF2 marker surface before export: Main A-D,
+  Fill AA/BB/CC/DD, Intro A-C, and Ending A-C.
 - [~] Verify behavior against a wider range of legally usable style samples.
 - [~] Confirm all StyleForge parts across multiple PSR-E keyboard models.
 
@@ -81,7 +91,20 @@ phrase availability depended on the skeleton's CASM channel coverage. The
 CASM-aware remapping code addresses this class of mismatch; broader hardware
 verification remains open.
 
-### 6. Built-in PSR-E Export
+### 6. PSR-SX600 SFF2 Export
+
+- [x] PSR-SX600 editor profile exposes two rhythm, bass, two chord, pad, and
+  two phrase tracks.
+- [x] PSR-SX600 editor profile exposes Main A-D, Fill A-D, Intro A-C, and
+  Ending A-C.
+- [x] Uploaded SFF2 `.sty` and `.prs` bases preserve their non-MIDI tail,
+  including `CASM`, `OTSc`, and later chunks byte-for-byte.
+- [~] Map authored SX tracks onto each section's available `Ctb2` channels and
+  report any remap.
+- [!] No PSR-SX hardware load, playback, transition, or chord-following result
+  has been recorded yet.
+
+### 7. Built-in PSR-E Export
 
 - [x] Generate MIDI format 0 with PPQ 192.
 - [x] Generate one MTrk with SFF1 and SInt markers.
@@ -97,7 +120,7 @@ verification remains open.
 - [~] Repeat tests on multiple PSR-E models and firmware versions.
 - [ ] Replace reverse-engineered Ctab assumptions with documented fixture tests.
 
-### 7. Quality And Release Readiness
+### 8. Quality And Release Readiness
 
 - [x] Contributor workflow and architecture documentation.
 - [ ] Automated binary parser/export test harness.
@@ -133,11 +156,12 @@ Exit criteria:
 
 ### Milestone C: Broader Yamaha Compatibility
 
-Status: `[ ]`
+Status: `[~]`
 
 Exit criteria:
 
-- SX/Generic section and channel behavior is specified.
+- PSR-SX600 SFF2 section and `Ctb2` channel behavior is specified from
+  legally usable evidence and verified on hardware.
 - SFF1/SFF2 scope is decided from inspected files and target hardware.
 - Additional keyboard profiles have fixtures and hardware results.
 - Model-specific behavior is represented explicitly rather than guessed.
@@ -166,6 +190,8 @@ Keep these tasks atomic and update the markings after each verified result:
    part.
 5. Create a hardware matrix containing keyboard model, firmware when known,
    export mode, section, track, chord behavior, and result.
+6. Load an SX project through each supplied SFF2 base and record the actual
+   PSR-SX model, sections, channel remaps, playback, and chord result.
 
 ## Checkpoint Update Template
 

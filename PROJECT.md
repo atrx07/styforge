@@ -43,7 +43,8 @@ The app is expected to provide:
 - JSON save and load.
 - Standard MIDI export for a section or selected track.
 - Yamaha `.STY` export through a built-in PSR-E mapping.
-- Uploaded working `.STY` skeleton export as a compatibility fallback.
+- Uploaded working Yamaha `.STY` or SFF2 `.PRS` skeleton export as a
+  compatibility fallback, including PSR-SX600.
 
 ## Yamaha Export Strategy
 
@@ -63,6 +64,11 @@ project notes while preserving setup events and its CASM tail. This mode is a
 fallback and a research tool for keyboards or styles whose internal rules differ
 from the built-in mapping.
 
+For PSR-SX600, this is currently the supported style-export path. An uploaded
+SFF2 `.sty` or `.prs` base must contain the SX section markers and `Ctb2` CASM
+channel tables. StyleForge preserves that base's Yamaha-specific data and maps
+authored notes only onto channels described by the relevant section.
+
 ## Scope Boundaries
 
 StyleForge Lite is intentionally:
@@ -70,7 +76,8 @@ StyleForge Lite is intentionally:
 - A static frontend with no backend or account system.
 - A pattern and style editor, not a full digital audio workstation.
 - A simple WebAudio preview, not a Yamaha sound-engine emulator.
-- Focused on SFF1 and current target keyboards before broader SFF2 support.
+- Focused on SFF1 built-in PSR-E export and uploaded SFF2 PSR-SX600 export
+  before broader SFF2 generation support.
 
 Out of scope for the current phase:
 

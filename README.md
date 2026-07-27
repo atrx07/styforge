@@ -2,7 +2,7 @@
 
 StyleForge Lite is a static, mobile-first Yamaha arranger style sketchpad. It lets you build simple drum and accompaniment patterns in the browser, preview them with WebAudio, save/load projects as JSON, export MIDI, and experiment with Yamaha `.STY` style export for PSR-E and related arranger keyboards.
 
-Current app version: **v1.2.2 experimental**
+Current app version: **v1.2.3 experimental**
 
 ## Quick Start
 
@@ -77,6 +77,11 @@ Sections:
 
 Broader arranger-style profile for testing.
 
+PSR-SX600 style export uses an uploaded Yamaha SFF2 `.sty` or `.prs` base.
+The app validates its SX markers and `Ctb2` CASM tables before injecting notes.
+This flow has structural reference-file validation but no recorded SX hardware
+result yet.
+
 Tracks:
 
 - Rhythm 1
@@ -131,9 +136,10 @@ StyleForge maps PSR-E tracks to MIDI channels like this:
 
 Recent hardware testing showed this built-in path can produce a smaller `.STY` file where all StyleForge channels play.
 
-### Uploaded STY Skeleton
+### Uploaded Yamaha STY/PRS Skeleton
 
-This fallback mode uses a known-working Yamaha `.STY` file as the style skeleton.
+This fallback mode uses a known-working Yamaha `.STY` or SFF2 `.PRS` file as
+the style skeleton.
 
 The exporter removes old note events and injects StyleForge notes while preserving:
 
@@ -144,6 +150,11 @@ The exporter removes old note events and injects StyleForge notes while preservi
 - markers
 - `fn:` text events
 - the original CASM tail
+
+For PSR-SX600, the exporter reads SFF2 `Ctb2` entries as well as the older SFF1
+`Ctab` entries. It requires Main A-D, Fill AA/BB/CC/DD, Intro A-C, and Ending
+A-C markers. Fill B is also written to `Fill In BA` when that compatibility
+marker is present in the base.
 
 This mode is useful because it preserves a real Yamaha style structure. It also follows that skeleton's CASM channel rules. If the normal StyleForge channel is not exposed for a section, the exporter remaps the notes to a valid section Ctab and reports the remap in the export status line.
 
@@ -166,6 +177,8 @@ CASM is the important "style brain." It describes which channels belong to which
 
 - Yamaha style validation is strict and model-dependent.
 - Built-in CASM is reverse engineered and still needs more hardware testing.
+- Built-in export is PSR-E only. PSR-SX600 currently requires an uploaded SFF2
+  Yamaha base and still needs hardware verification.
 - Uploaded skeleton exports depend on the skeleton's internal CASM mapping.
 - Some skeletons may force remaps or shared section parts when they expose fewer usable Ctabs than StyleForge tracks.
 - WebAudio preview is only a sketching aid and may behave differently across browsers, especially on iPhone.
@@ -196,6 +209,13 @@ For uploaded skeleton testing:
 - Uploaded skeleton exports now prefer the normal StyleForge channel, then remap notes to a valid section Ctab when the skeleton does not expose that channel.
 - Preserved the uploaded skeleton CASM tail byte-for-byte; only injected note channels are adjusted.
 - Added export debug text for channel remaps such as `Phrases ch15->5`.
+
+### v1.2.3
+
+- Added PSR-SX600 SFF2 uploaded-base support for `.sty` and `.prs` files.
+- Reads SFF2 `Ctb2` CASM channel tables and validates SX section markers.
+- Corrected the SX fill mapping to the direct AA/BB/CC/DD slots; `Fill In BA`
+  receives the authored Fill B pattern when present.
 
 ### v1.2.1
 

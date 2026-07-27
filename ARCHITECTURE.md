@@ -103,9 +103,10 @@ The generated base also defines JavaScript channel 8, MIDI channel 9, as an
 additional rhythm part. Remember that source code channels are zero-based while
 MIDI channel labels are one-based.
 
-The broader SX/Generic profile exposes both rhythm and phrase tracks, but the
-built-in exporter currently accepts only the PSR-E profile. SX/Generic STY
-experiments use uploaded skeleton mode.
+The broader SX/Generic profile exposes both rhythm and phrase tracks. The
+built-in exporter currently accepts only the PSR-E profile. PSR-SX600 exports
+use an uploaded SFF2 Yamaha `.sty` or `.prs` base, whose section-specific
+`Ctb2` entries determine the channels available for injection.
 
 ## Section Mapping
 
@@ -122,6 +123,16 @@ Project sections are injected into Yamaha marker slots:
 
 The built-in base also carries Intro B and Ending B marker regions so its
 structure stays close to the inspected PSR-E style layout.
+
+For PSR-SX600 uploaded SFF2 bases, the export plan uses these marker slots:
+
+| Project section | Yamaha marker slot |
+| --- | --- |
+| Main A-D | `Main A` through `Main D` |
+| Fill A-D | `Fill In AA`, `Fill In BB`, `Fill In CC`, `Fill In DD` |
+| Fill B compatibility slot | `Fill In BA` when present |
+| Intro A-C | `Intro A` through `Intro C` |
+| Ending A-C | `Ending A` through `Ending C` |
 
 ## MIDI Export
 
@@ -160,7 +171,8 @@ be rebuilt whenever note events change.
 
 1. The browser reads the supplied file as bytes.
 2. The parser locates `MThd`, `MTrk`, marker ranges, and the tail after MTrk.
-3. CASM CSEG/Sdec/Ctab entries are read into a section-to-channel map.
+3. CASM `CSEG`/`Sdec`/`Ctab` or SFF2 `Ctb2` entries are read into a
+   section-to-channel map.
 4. Only Note On and Note Off events are filtered from the original MTrk.
 5. All other MIDI, meta, SysEx, controller, voice, and setup events are kept.
 6. Project tracks prefer their normal channels, then remap to valid section
@@ -168,6 +180,8 @@ be rebuilt whenever note events change.
 7. The MTrk is rebuilt and the original tail is appended byte-for-byte.
 
 The export status reports marker coverage, note counts, and channel remaps.
+For PSR-SX600, the base must be SFF2, have `Ctb2` tables, and include the full
+Main A-D, Fill AA/BB/CC/DD, Intro A-C, and Ending A-C marker surface.
 
 ## Important Invariants
 
@@ -175,6 +189,7 @@ The export status reports marker coverage, note counts, and channel remaps.
 - Script cache-busting versions must match an intentional release version.
 - Yamaha marker spelling and `fn:` labels are binary-format inputs.
 - A note channel must be represented by the relevant CASM section.
+- PSR-SX600 channel decisions come from `Ctb2`, not assumed channel numbers.
 - The uploaded skeleton tail must not be normalized or regenerated.
 - Unknown setup and metadata should survive uploaded-skeleton export.
 - End-of-track belongs inside `MTrk`; CASM begins after the MTrk bytes.
