@@ -64,10 +64,11 @@ project notes while preserving setup events and its CASM tail. This mode is a
 fallback and a research tool for keyboards or styles whose internal rules differ
 from the built-in mapping.
 
-For PSR-SX600, this is currently the supported style-export path. An uploaded
-SFF2 `.sty` or `.prs` base must contain the SX section markers and `Ctb2` CASM
-channel tables. StyleForge preserves that base's Yamaha-specific data and maps
-authored notes only onto channels described by the relevant section.
+For PSR-SX600, StyleForge also provides a generated SFF2 export mode. It creates
+the marker and `Ctb2` CASM surface directly from the sequencer, so an uploaded
+base is optional. Uploaded SFF2 `.sty` or `.prs` bases remain the compatibility
+fallback because their Yamaha-specific data is preserved. The generated path is
+experimental until it is verified on PSR-SX hardware.
 
 ## Scope Boundaries
 
@@ -76,8 +77,8 @@ StyleForge Lite is intentionally:
 - A static frontend with no backend or account system.
 - A pattern and style editor, not a full digital audio workstation.
 - A simple WebAudio preview, not a Yamaha sound-engine emulator.
-- Focused on SFF1 built-in PSR-E export and uploaded SFF2 PSR-SX600 export
-  before broader SFF2 generation support.
+- Focused on built-in SFF1 PSR-E and experimental built-in SFF2 PSR-SX600
+  export before broader SFF2 generation support.
 
 Out of scope for the current phase:
 

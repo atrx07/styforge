@@ -2,7 +2,7 @@
 
 StyleForge Lite is a static, mobile-first Yamaha arranger style sketchpad. It lets you build simple drum and accompaniment patterns in the browser, preview them with WebAudio, save/load projects as JSON, export MIDI, and experiment with Yamaha `.STY` style export for PSR-E and related arranger keyboards.
 
-Current app version: **v1.2.3 experimental**
+Current app version: **v1.2.4 experimental**
 
 ## Quick Start
 
@@ -77,10 +77,10 @@ Sections:
 
 Broader arranger-style profile for testing.
 
-PSR-SX600 style export uses an uploaded Yamaha SFF2 `.sty` or `.prs` base.
-The app validates its SX markers and `Ctb2` CASM tables before injecting notes.
-This flow has structural reference-file validation but no recorded SX hardware
-result yet.
+PSR-SX600 has a generated SFF2 export mode as well as an uploaded Yamaha SFF2
+`.sty` or `.prs` fallback. The generated mode needs no base file; it writes the
+SX markers and `Ctb2` CASM tables from the sequencer. Both paths are
+experimental and have no recorded SX hardware result yet.
 
 Tracks:
 
@@ -124,6 +124,16 @@ The browser generates a PSR-E oriented SFF1 style base with:
 - `fn:` section text events
 - Yamaha/XG setup events
 - generated CASM data
+
+### Built-in PSR-SX600 Mapping
+
+Select the PSR-SX600 keyboard profile and choose **Built-in PSR-SX600 Mapping**.
+The exporter generates a format-0 SFF2 file with PPQ 1920, all SX main/fill/
+intro/ending markers, matching `fn:` text, Yamaha/XG setup, and three CASM
+`CSEG` groups containing `Ctb2` channel tables for the eight SX tracks.
+
+No skeleton is required. This is structurally validated but still experimental:
+test each export on an actual PSR-SX keyboard before relying on it.
 
 StyleForge maps PSR-E tracks to MIDI channels like this:
 
@@ -177,8 +187,8 @@ CASM is the important "style brain." It describes which channels belong to which
 
 - Yamaha style validation is strict and model-dependent.
 - Built-in CASM is reverse engineered and still needs more hardware testing.
-- Built-in export is PSR-E only. PSR-SX600 currently requires an uploaded SFF2
-  Yamaha base and still needs hardware verification.
+- Built-in PSR-SX600 export is structurally validated only and still needs SX
+  hardware verification.
 - Uploaded skeleton exports depend on the skeleton's internal CASM mapping.
 - Some skeletons may force remaps or shared section parts when they expose fewer usable Ctabs than StyleForge tracks.
 - WebAudio preview is only a sketching aid and may behave differently across browsers, especially on iPhone.
@@ -216,6 +226,12 @@ For uploaded skeleton testing:
 - Reads SFF2 `Ctb2` CASM channel tables and validates SX section markers.
 - Corrected the SX fill mapping to the direct AA/BB/CC/DD slots; `Fill In BA`
   receives the authored Fill B pattern when present.
+
+### v1.2.4
+
+- Added Built-in PSR-SX600 Mapping: SFF2, PPQ 1920, SX markers, and generated
+  `Ctb2` CASM groups with no uploaded base required.
+- Retained Uploaded Yamaha STY/PRS Base as the SX compatibility fallback.
 
 ### v1.2.1
 

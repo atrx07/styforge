@@ -104,9 +104,9 @@ additional rhythm part. Remember that source code channels are zero-based while
 MIDI channel labels are one-based.
 
 The broader SX/Generic profile exposes both rhythm and phrase tracks. The
-built-in exporter currently accepts only the PSR-E profile. PSR-SX600 exports
-use an uploaded SFF2 Yamaha `.sty` or `.prs` base, whose section-specific
-`Ctb2` entries determine the channels available for injection.
+built-in exporter supports PSR-E and experimental PSR-SX600 generation.
+PSR-SX600 can also use an uploaded SFF2 Yamaha `.sty` or `.prs` base, whose
+section-specific `Ctb2` entries determine the channels available for injection.
 
 ## Section Mapping
 
@@ -166,6 +166,18 @@ be rebuilt whenever note events change.
 5. Existing notes are removed, project notes are injected, and the MTrk is
    rebuilt.
 6. The generated CASM tail is appended to the rebuilt track.
+
+### Built-in PSR-SX600 Export Flow
+
+1. `buildBuiltInSxBase()` creates a format-0 SFF2 base at PPQ 1920.
+2. It adds Main A-D, Fill AA/BB/CC/DD and BA, Intro A-C, Ending A-C, and
+   matching `fn:` marker text.
+3. `buildSxCasm()` generates three `CSEG` groups with eight 47-byte `Ctb2`
+   records each: two rhythm, bass, two chord, pad, and two phrase channels.
+4. The common parser removes the empty base's old notes, injects the project
+   notes, rebuilds `MTrk`, and appends the generated CASM tail.
+
+This flow is based on inspected SX structure, not SX hardware proof.
 
 ### Uploaded Skeleton Flow
 

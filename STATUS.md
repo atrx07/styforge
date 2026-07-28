@@ -1,8 +1,8 @@
 # StyleForge Lite Status
 
-Current checkpoint: **v1.2.3 experimental**
+Current checkpoint: **v1.2.4 experimental**
 
-Last reviewed: **2026-07-27**
+Last reviewed: **2026-07-28**
 
 ## Marking Guide
 
@@ -21,6 +21,15 @@ the affected checkpoint when its state changes; otherwise add a dated entry to
 the change log below.
 
 ## Change Log
+
+### 2026-07-28
+
+- [x] Added a generated PSR-SX600 SFF2 export mode that requires no uploaded
+  skeleton.
+- [x] Generate a PPQ-1920 format-0 `MTrk`, SX section markers and matching
+  `fn:` text, plus a three-`CSEG` CASM tail with 24 `Ctb2` channel tables.
+- [~] Generated PSR-SX600 exports pass structural checks only. No SX keyboard
+  hardware load or playback result has been recorded.
 
 ### 2026-07-27
 
@@ -99,6 +108,10 @@ verification remains open.
   Ending A-C.
 - [x] Uploaded SFF2 `.sty` and `.prs` bases preserve their non-MIDI tail,
   including `CASM`, `OTSc`, and later chunks byte-for-byte.
+- [x] Generate a standalone SFF2 base with all eight SX StyleForge tracks on
+  `Ctb2`-described channels.
+- [x] Generate Main A-D, Fill AA/BB/CC/DD and BA, Intro A-C, and Ending A-C
+  marker regions from the sequencer without an uploaded base.
 - [~] Map authored SX tracks onto each section's available `Ctb2` channels and
   report any remap.
 - [!] No PSR-SX hardware load, playback, transition, or chord-following result

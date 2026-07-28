@@ -11,7 +11,7 @@
   <header>
     <div>
       <h1>StyleForge Lite</h1>
-      <p>Mobile-first Yamaha-style pattern sketchpad — v1.2.3 experimental</p>
+      <p>Mobile-first Yamaha-style pattern sketchpad — v1.2.4 experimental</p>
     </div>
     <div class="header-actions">
       <button id="playBtn">▶ Play</button>
@@ -19,7 +19,7 @@
       <label class="fileLabel">Load JSON<input type="file" id="loadJsonInput" accept=".json"/></label>
       <label class="fileLabel">Load Yamaha Base<input type="file" id="templateStyleInput" accept=".sty,.STY,.prs,.PRS,.mid,.MID"/></label>
       <label class="miniLabel">MIDI Export<select id="exportMode"><option value="section">Whole Section</option><option value="track">Selected Track</option></select></label>
-      <label class="miniLabel">STY Mode<select id="styExportMode"><option value="builtin-psre" selected>Built-in PSR-E Mapping</option><option value="uploaded">Uploaded Yamaha STY/PRS Base</option></select></label>
+      <label class="miniLabel">STY Mode<select id="styExportMode"><option value="builtin-psre" selected>Built-in PSR-E Mapping</option><option value="builtin-sx">Built-in PSR-SX600 Mapping</option><option value="uploaded">Uploaded Yamaha STY/PRS Base</option></select></label>
       <button id="exportMidiBtn">Export MIDI</button>
       <button id="exportStyleBtn">Export STY</button>
     </div>
@@ -63,12 +63,12 @@
         <button id="clearTrackBtn">Clear Track</button>
         <button id="demoBtn">Load Demo</button>
       </div>
-      <p class="hint">Built-in PSR-E Mapping is the default export path. PSR-SX600 uses an uploaded SFF2 Yamaha .sty or .prs base.</p>
+      <p class="hint">Choose Built-in PSR-E or PSR-SX600 Mapping to export without a base. Uploaded Yamaha STY/PRS Base remains the compatibility fallback.</p>
       <p class="hint" id="templateStatus">STY exporter loading...</p>
     </section>
   </main>
-  <footer>v1.2.3: PSR-SX600 SFF2/Ctb2 uploaded-base export.</footer>
-  <script src="app.js?v=1.2.3"></script>
-  <script src="sty-export.js?v=1.2.3"></script>
+  <footer>v1.2.4: experimental built-in PSR-SX600 SFF2 export.</footer>
+  <script src="app.js?v=1.2.4"></script>
+  <script src="sty-export.js?v=1.2.4"></script>
 </body>
 </html>
