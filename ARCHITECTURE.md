@@ -164,6 +164,11 @@ section and target track. The target profile supplies the fixed output channel
 and section-to-marker mapping; the source channel is never assumed to be the
 same as the Yamaha output channel.
 
+The import status is an ARIA live region with pending, success, warning, and
+error states. Before replacing any target notes, the importer confirms that the
+file has complete note pairs on the selected channel and within the selected
+section length; otherwise it reports the reason and preserves the target.
+
 ## STY Container Model
 
 The current exporter treats a compatible style as:

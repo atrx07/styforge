@@ -1,6 +1,6 @@
 # StyleForge Lite Status
 
-Current checkpoint: **v1.3.0 experimental**
+Current checkpoint: **v1.3.1 experimental**
 
 Last reviewed: **2026-07-28**
 
@@ -24,6 +24,11 @@ the change log below.
 
 ### 2026-07-28
 
+- [x] Diagnosed the supplied `mainA.mid` as a valid format-1 container with
+  timing and track-name metadata but no Note On/Off events; added explicit
+  timeline import diagnostics for that case and other empty-import causes.
+- [x] Parser-checked the captured `mainA.mid` structure (format 1, PPQ 96,
+  three tracks, zero notes) and a synthetic format-0 drum Note On/Off pair.
 - [x] Added a separate MIDI Timeline Import page; the original editor remains
   the prototype page.
 - [x] Added channel-specific MIDI note import into the selected PSR-E or

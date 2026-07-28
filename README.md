@@ -2,7 +2,7 @@
 
 StyleForge Lite is a static, mobile-first Yamaha arranger style sketchpad. It lets you build simple drum and accompaniment patterns in the browser, preview them with WebAudio, save/load projects as JSON, export MIDI, and experiment with Yamaha `.STY` style export for PSR-E and related arranger keyboards.
 
-Current app version: **v1.3.0 experimental**
+Current app version: **v1.3.1 experimental**
 
 ## Quick Start
 
@@ -261,6 +261,13 @@ For uploaded skeleton testing:
 - Added Built-in PSR-SX600 Mapping: SFF2, PPQ 1920, SX markers, and generated
   `Ctb2` CASM groups with no uploaded base required.
 - Retained Uploaded Yamaha STY/PRS Base as the SX compatibility fallback.
+
+### v1.3.1
+
+- Added explicit timeline-import success, warning, and error signals.
+- Report MIDI files with no Note On/Off data, incomplete note pairs, an empty
+  selected source channel, or notes outside the selected bar range without
+  clearing existing target notes.
 
 ### v1.3.0
 
