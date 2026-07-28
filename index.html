@@ -3,73 +3,63 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="StyleForge Lite is a browser based Yamaha arranger style workspace."/>
   <title>StyleForge Lite</title>
-  <link rel="stylesheet" href="styles.css?v=0.6.1"/>
-  <link rel="stylesheet" href="bass-fix.css?v=0.6.2"/>
+  <link rel="stylesheet" href="styles.css?v=1.4.0"/>
 </head>
-<body>
-  <header>
-    <div>
-      <h1>StyleForge Lite</h1>
-      <p>Mobile-first Yamaha-style pattern sketchpad — v1.3.1 experimental</p>
-    </div>
-    <div class="header-actions">
-      <a class="pageLink" href="timeline.html">MIDI Timeline Import</a>
-      <button id="playBtn">▶ Play</button>
-      <button id="saveJsonBtn">Save JSON</button>
-      <label class="fileLabel">Load JSON<input type="file" id="loadJsonInput" accept=".json"/></label>
-      <label class="fileLabel">Load Yamaha Base<input type="file" id="templateStyleInput" accept=".sty,.STY,.prs,.PRS,.mid,.MID"/></label>
-      <label class="miniLabel">MIDI Export<select id="exportMode"><option value="section">Whole Section</option><option value="track">Selected Track</option></select></label>
-      <label class="miniLabel">STY Mode<select id="styExportMode"><option value="builtin-psre" selected>Built-in PSR-E Mapping</option><option value="builtin-sx">Built-in PSR-SX600 Mapping</option><option value="uploaded">Uploaded Yamaha STY/PRS Base</option></select></label>
-      <button id="exportMidiBtn">Export MIDI</button>
-      <button id="exportStyleBtn">Export STY</button>
-    </div>
+<body class="home-page">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="StyleForge Lite home">StyleForge <span>Lite</span></a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="prototype.html">Prototype editor</a>
+      <a href="timeline.html">MIDI sequence</a>
+    </nav>
   </header>
-  <main>
-    <section class="panel settings">
-      <h2>Style Settings</h2>
-      <div class="settings-grid">
-        <label>Style Name <input id="styleName" value="Test Style"/></label>
-        <label>Tempo <input id="tempo" type="number" min="40" max="240" value="120"/></label>
-        <label>Bars<select id="barsSelect"><option value="1" selected>1 bar</option><option value="2">2 bars</option><option value="4">4 bars</option></select></label>
-        <label>Keyboard <select id="keyboardSelect"></select></label>
-        <label>Section <select id="sectionSelect"></select></label>
-      </div>
-    </section>
-    <section class="panel tracks">
-      <h2>Tracks</h2>
-      <div id="trackList"></div>
-    </section>
-    <section class="panel sequencer">
-      <div class="sequencer-head">
-        <div>
-          <h2 id="editorTitle">Drum Grid</h2>
-          <p id="editorHelp">Choose a keyboard profile, create a pattern, then export.</p>
+
+  <main class="home-main">
+    <section class="home-hero">
+      <div class="hero-copy">
+        <p class="kicker">Yamaha arranger style tools</p>
+        <h1>Build a style in the browser.</h1>
+        <p class="hero-summary">Sketch patterns directly or bring in MIDI, then export with the mapping for your keyboard series.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="prototype.html">Open prototype editor</a>
+          <a class="button secondary" href="timeline.html">Open MIDI sequence</a>
         </div>
-        <strong id="barIndicator">Bar 1 / 1</strong>
       </div>
-      <div class="sequencer-tools" id="barTools">
-        <button id="scrollStartBtn">◀ Bar</button>
-        <button id="scrollEndBtn">Bar ▶</button>
-      </div>
-      <div id="grid"></div>
+      <figure class="hero-visual">
+        <img src="assets/styleforge-studio.png" alt="Arranger keyboard and MIDI controller in a dark studio"/>
+      </figure>
     </section>
-    <section class="panel inspector">
-      <h2>Selected Track</h2>
-      <label>Channel <select id="channelSelect"></select></label>
-      <label>Voice <select id="voiceSelect"></select></label>
-      <button id="applyVoiceBtn">Apply Voice</button>
-      <hr/>
-      <div class="row-actions">
-        <button id="clearTrackBtn">Clear Track</button>
-        <button id="demoBtn">Load Demo</button>
+
+    <section class="workspace-choices" aria-labelledby="choose-workspace-heading">
+      <div class="section-heading">
+        <h2 id="choose-workspace-heading">Choose a workspace</h2>
+        <p>Both tools keep PSR-E and PSR-SX600 sections, tracks, channels, and exports separate.</p>
       </div>
-      <p class="hint">Choose Built-in PSR-E or PSR-SX600 Mapping to export without a base. Uploaded Yamaha STY/PRS Base remains the compatibility fallback.</p>
-      <p class="hint" id="templateStatus">STY exporter loading...</p>
+      <div class="workspace-choice-grid">
+        <article class="workspace-choice prototype-choice">
+          <p class="choice-label">Build from scratch</p>
+          <h3>Prototype editor</h3>
+          <p>Program drum and accompaniment patterns on the original grid editor. Preview, save, and export a style.</p>
+          <a class="text-link" href="prototype.html">Open the grid editor</a>
+        </article>
+        <article class="workspace-choice sequence-choice">
+          <p class="choice-label">Bring your own MIDI</p>
+          <h3>MIDI sequence</h3>
+          <p>Route one MIDI channel into a section and target track, inspect its timeline, then export the finished style.</p>
+          <a class="text-link" href="timeline.html">Open the sequence workspace</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="home-note" aria-labelledby="workflow-note-heading">
+      <h2 id="workflow-note-heading">Start with the tool that matches your source.</h2>
+      <p>Use the prototype editor for new patterns. Use MIDI sequence when your arrangement already exists in a MIDI file.</p>
     </section>
   </main>
-  <footer>v1.3.1: clearer MIDI timeline import results and diagnostics.</footer>
-  <script src="app.js?v=1.3.1"></script>
-  <script src="sty-export.js?v=1.3.1"></script>
+
+  <footer class="site-footer">StyleForge Lite. Browser based Yamaha style tools.</footer>
 </body>
 </html>

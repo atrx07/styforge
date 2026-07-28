@@ -9,26 +9,33 @@ manager, bundler, or generated build output.
 ```text
 index.html
   |
-  +-- styles.css + bass-fix.css
+  +-- styles.css
+  +-- assets/styleforge-studio.png
+  +-- links to prototype.html and timeline.html
+
+prototype.html
+  |
+  +-- styles.css
   +-- app.js
   |     +-- project model
   |     +-- sequencer UI
   |     +-- WebAudio preview
   |     +-- JSON and MIDI I/O
   |     +-- data/*.json
-  |
   +-- sty-export.js
         +-- built-in PSR-E base
         +-- MIDI/STY parser and rewriter
         +-- CASM generation and inspection
+
+timeline.html
   |
-  +-- timeline.html
-        +-- timeline.js
-        |     +-- standalone timeline project model
-        |     +-- Standard MIDI parser and channel importer
-        |     +-- PSR-E / PSR-SX600 routing UI
-        +-- sty-export.js (shared built-in STY exporter)
-        +-- browser download
+  +-- styles.css + timeline.css
+  +-- timeline.js
+  |     +-- standalone timeline project model
+  |     +-- Standard MIDI parser and channel importer
+  |     +-- PSR-E / PSR-SX600 routing UI
+  +-- sty-export.js (shared built-in STY exporter)
+  +-- browser download
 ```
 
 `sty-export.js` loads after `app.js` and intentionally uses shared runtime
@@ -39,9 +46,9 @@ state and helpers such as `project`, `BAR_COUNT`, `activeTracks`,
 
 | File | Responsibility |
 | --- | --- |
-| `index.html` | App shell, controls, script order, and cache-busting versions |
-| `styles.css` | Main mobile-first layout and component styling |
-| `bass-fix.css` | Focused editor layout corrections |
+| `index.html` | Home page, workspace guidance, and navigation |
+| `prototype.html` | Original grid editor shell, controls, and script order |
+| `styles.css` | Shared mobile-first visual system and prototype styling |
 | `app.js` | Profiles, project state, rendering, editing, preview, JSON, and MIDI |
 | `sty-export.js` | Experimental Yamaha SFF1/CASM export |
 | `timeline.html` | Separate MIDI Timeline Import workflow |
@@ -226,7 +233,7 @@ Main A-D, Fill AA/BB/CC/DD, Intro A-C, and Ending A-C marker surface.
 
 ## Important Invariants
 
-- `index.html` must load `app.js` before `sty-export.js`.
+- `prototype.html` must load `app.js` before `sty-export.js`.
 - Script cache-busting versions must match an intentional release version.
 - Yamaha marker spelling and `fn:` labels are binary-format inputs.
 - A note channel must be represented by the relevant CASM section.

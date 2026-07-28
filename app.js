@@ -158,7 +158,7 @@ function createDefaultProject() {
   ALL_SECTION_IDS.forEach(id => sections[id] = makeSection());
   return {
     app: "StyleForge Lite",
-    version: "1.3.1",
+    version: "1.4.0",
     name: "Test Style",
     tempo: 120,
     barCount: BAR_COUNT,
@@ -287,7 +287,8 @@ function renderTrackList() {
   const sec = project.sections[currentSection()];
   trackList.innerHTML = "";
   activeTracks(sec).forEach(track => {
-    const div = document.createElement("div");
+    const div = document.createElement("button");
+    div.type = "button";
     div.className = "track" + (track.id === selectedTrackId ? " active" : "");
     div.innerHTML = `<strong>${displayName(track)}</strong><br/><small>${track.voice} • ${track.notes.length} notes</small>`;
     div.onclick = () => { selectedTrackId = track.id; renderAll(); };

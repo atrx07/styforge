@@ -14,7 +14,7 @@ const keyboardSelect=document.getElementById("keyboardSelect"),sectionSelect=doc
 
 function defaultVoice(id){if(id==="rhythm1"||id==="rhythm2")return"Standard Kit";if(id==="bass")return"Finger Bass";if(id==="pad")return"Warm Pad";return"Grand Piano"}
 function makeTimelineSection(){return{bars:BAR_COUNT,stepsPerBar:16,tracks:TIMELINE_TRACKS.map(track=>({...track,voice:defaultVoice(track.id),notes:[]}))}}
-function createTimelineProject(){let sections={};TIMELINE_SECTION_IDS.forEach(id=>sections[id]=makeTimelineSection());return{app:"StyleForge MIDI Timeline",version:"1.3.1",name:"Timeline Style",tempo:120,barCount:1,timeSignature:"4/4",keyboard:"PSR-E Series",sections}}
+function createTimelineProject(){let sections={};TIMELINE_SECTION_IDS.forEach(id=>sections[id]=makeTimelineSection());return{app:"StyleForge MIDI Timeline",version:"1.4.0",name:"Timeline Style",tempo:120,barCount:1,timeSignature:"4/4",keyboard:"PSR-E Series",sections}}
 function currentProfile(){return TIMELINE_PROFILES[project.keyboard]||TIMELINE_PROFILES["PSR-E Series"]}
 function activeTrackIds(){return currentProfile().tracks.map(item=>item[0])}
 function activeTracks(section){return(section||project.sections[currentSection()]).tracks.filter(track=>activeTrackIds().includes(track.id))}

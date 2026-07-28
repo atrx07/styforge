@@ -21,7 +21,8 @@ Generic XG support are secondary and should not weaken PSR-E behavior.
 
 ## Product Principles
 
-- Start in the editor, not on a marketing page.
+- Start with a short, practical choice between building a pattern and importing
+  MIDI; reach either editor in one click.
 - Make the common pattern-building workflow comfortable on a phone.
 - Keep projects portable and understandable.
 - Keep exports deterministic: the same project and mode should produce the same
@@ -77,8 +78,8 @@ experimental until it is verified on PSR-SX hardware.
 StyleForge Lite is intentionally:
 
 - A static frontend with no backend or account system.
-- Two complementary editing surfaces: the original grid prototype and the MIDI
-  timeline import page.
+- A compact home page plus two complementary editing surfaces: the original
+  grid prototype and the MIDI timeline import page.
 - A pattern and style editor, not a full digital audio workstation.
 - A simple WebAudio preview, not a Yamaha sound-engine emulator.
 - Focused on built-in SFF1 PSR-E and experimental built-in SFF2 PSR-SX600

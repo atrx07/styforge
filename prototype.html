@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="StyleForge Lite prototype grid editor for Yamaha arranger style patterns."/>
+  <title>Prototype editor | StyleForge Lite</title>
+  <link rel="stylesheet" href="styles.css?v=1.4.0"/>
+</head>
+<body class="workspace-page prototype-page">
+  <header class="site-header workspace-header">
+    <a class="brand" href="index.html" aria-label="StyleForge Lite home">StyleForge <span>Lite</span></a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="index.html">Home</a>
+      <a href="prototype.html" aria-current="page">Prototype editor</a>
+      <a href="timeline.html">MIDI sequence</a>
+    </nav>
+    <div class="header-utility">
+      <button id="playBtn" class="button compact primary">Play</button>
+      <button id="saveJsonBtn" class="button compact secondary">Save project</button>
+      <label class="fileLabel compact">Load project<input type="file" id="loadJsonInput" accept=".json"/></label>
+    </div>
+  </header>
+
+  <main class="workspace-main prototype-main">
+    <section class="workspace-intro">
+      <p class="kicker">Original grid workspace</p>
+      <h1>Prototype editor</h1>
+      <p>Create a pattern one track at a time, then export MIDI or a Yamaha style using the selected keyboard profile.</p>
+    </section>
+
+    <div class="editor-workspace">
+      <aside class="editor-rail">
+        <section class="panel settings">
+          <h2>Style settings</h2>
+          <div class="settings-grid">
+            <label>Style name<input id="styleName" value="Test Style"/></label>
+            <label>Tempo<input id="tempo" type="number" min="40" max="240" value="120"/></label>
+            <label>Bars<select id="barsSelect"><option value="1" selected>1 bar</option><option value="2">2 bars</option><option value="4">4 bars</option></select></label>
+            <label>Keyboard<select id="keyboardSelect"></select></label>
+            <label>Section<select id="sectionSelect"></select></label>
+          </div>
+        </section>
+
+        <section class="panel tracks">
+          <h2>Tracks</h2>
+          <div id="trackList"></div>
+        </section>
+
+        <section class="panel inspector">
+          <h2>Selected track</h2>
+          <label>Channel<select id="channelSelect"></select></label>
+          <label>Voice<select id="voiceSelect"></select></label>
+          <button id="applyVoiceBtn" class="button secondary full-width">Apply voice</button>
+          <div class="panel-divider"></div>
+          <div class="row-actions">
+            <button id="clearTrackBtn" class="button secondary">Clear track</button>
+            <button id="demoBtn" class="button secondary">Load demo</button>
+          </div>
+        </section>
+      </aside>
+
+      <section class="panel sequencer">
+        <div class="sequencer-head">
+          <div>
+            <h2 id="editorTitle">Drum grid</h2>
+            <p id="editorHelp">Choose a keyboard profile, create a pattern, then export.</p>
+          </div>
+          <strong id="barIndicator">Bar 1 / 1</strong>
+        </div>
+        <div class="sequencer-tools" id="barTools">
+          <button id="scrollStartBtn" class="button secondary">Previous bar</button>
+          <button id="scrollEndBtn" class="button secondary">Next bar</button>
+        </div>
+        <div id="grid"></div>
+      </section>
+
+      <aside class="editor-export">
+        <section class="panel export-panel">
+          <h2>Export</h2>
+          <label>MIDI export<select id="exportMode"><option value="section">Whole section</option><option value="track">Selected track</option></select></label>
+          <button id="exportMidiBtn" class="button secondary full-width">Export MIDI</button>
+          <div class="panel-divider"></div>
+          <label>Style export<select id="styExportMode"><option value="builtin-psre" selected>Built-in PSR-E mapping</option><option value="builtin-sx">Built-in PSR-SX600 mapping</option><option value="uploaded">Uploaded Yamaha STY/PRS base</option></select></label>
+          <label class="fileLabel">Load Yamaha base<input type="file" id="templateStyleInput" accept=".sty,.STY,.prs,.PRS,.mid,.MID"/></label>
+          <button id="exportStyleBtn" class="button primary full-width">Export STY</button>
+          <p class="hint">Built-in PSR-E and PSR-SX600 maps work without a base. An uploaded base remains the compatibility fallback.</p>
+          <p class="hint export-status" id="templateStatus">STY exporter loading...</p>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">StyleForge Lite. Prototype grid editor.</footer>
+  <script src="app.js?v=1.4.0"></script>
+  <script src="sty-export.js?v=1.4.0"></script>
+</body>
+</html>

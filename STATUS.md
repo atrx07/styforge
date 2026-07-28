@@ -1,6 +1,6 @@
 # StyleForge Lite Status
 
-Current checkpoint: **v1.3.1 experimental**
+Current checkpoint: **v1.4.0 experimental**
 
 Last reviewed: **2026-07-28**
 
@@ -24,6 +24,17 @@ the change log below.
 
 ### 2026-07-28
 
+- [x] Added a dedicated home page with clear routes to the prototype editor and
+  MIDI sequence workspace; moved the original editor shell to `prototype.html`.
+- [x] Rebuilt the shared desktop and mobile visual system for the home,
+  prototype, and MIDI sequence pages without changing Yamaha export behavior.
+- [x] Made the prototype track picker keyboard-accessible with semantic button
+  controls while preserving its existing selection behavior.
+- [x] Browser-smoke-tested the isolated local workspace at desktop and 390 px
+  mobile widths: all three pages had no page-level horizontal overflow or
+  console errors; home navigation, prototype demo loading, and PSR-SX600
+  profile switching worked. SX correctly exposed 14 sections and eight tracks
+  in both editing workflows.
 - [x] Diagnosed the supplied `mainA.mid` as a valid format-1 container with
   timing and track-name metadata but no Note On/Off events; added explicit
   timeline import diagnostics for that case and other empty-import causes.

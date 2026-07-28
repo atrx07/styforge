@@ -2,7 +2,7 @@
 
 StyleForge Lite is a static, mobile-first Yamaha arranger style sketchpad. It lets you build simple drum and accompaniment patterns in the browser, preview them with WebAudio, save/load projects as JSON, export MIDI, and experiment with Yamaha `.STY` style export for PSR-E and related arranger keyboards.
 
-Current app version: **v1.3.1 experimental**
+Current app version: **v1.4.0 experimental**
 
 ## Quick Start
 
@@ -20,14 +20,15 @@ http://127.0.0.1:8080
 
 No backend, package install, or build step is required. The app is designed for static hosts such as Cloudflare Pages.
 
-The original grid editor remains the prototype page. Open
-`http://127.0.0.1:8080/timeline.html` for the MIDI Timeline Import workflow.
+The opening page explains the two creation paths. Use
+`http://127.0.0.1:8080/prototype.html` for the original grid editor or
+`http://127.0.0.1:8080/timeline.html` for MIDI Timeline Import.
 
 ## Main Files
 
-- `index.html` - app shell and controls
-- `styles.css` - main mobile-first layout and visual styling
-- `bass-fix.css` - targeted editor styling fixes
+- `index.html` - introduction, navigation, and workspace choices
+- `prototype.html` - original grid editor and export controls
+- `styles.css` - shared mobile-first visual system and prototype layout
 - `app.js` - project model, sequencer UI, preview audio, JSON, and MIDI export
 - `sty-export.js` - experimental Yamaha `.STY` export logic
 - `timeline.html` - separate MIDI Timeline Import page
@@ -261,6 +262,15 @@ For uploaded skeleton testing:
 - Added Built-in PSR-SX600 Mapping: SFF2, PPQ 1920, SX markers, and generated
   `Ctb2` CASM groups with no uploaded base required.
 - Retained Uploaded Yamaha STY/PRS Base as the SX compatibility fallback.
+
+### v1.4.0
+
+- Added a dedicated home page that introduces the tool and links directly to
+  the prototype editor and MIDI sequence workspace.
+- Moved the original grid editor to `prototype.html`, keeping its project,
+  preview, MIDI, and STY workflows intact.
+- Rebuilt the shared responsive interface for desktop and phone use, including
+  clearer page hierarchy, navigation, controls, and import/export feedback.
 
 ### v1.3.1
 
