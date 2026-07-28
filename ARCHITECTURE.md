@@ -21,6 +21,13 @@ index.html
         +-- built-in PSR-E base
         +-- MIDI/STY parser and rewriter
         +-- CASM generation and inspection
+  |
+  +-- timeline.html
+        +-- timeline.js
+        |     +-- standalone timeline project model
+        |     +-- Standard MIDI parser and channel importer
+        |     +-- PSR-E / PSR-SX600 routing UI
+        +-- sty-export.js (shared built-in STY exporter)
         +-- browser download
 ```
 
@@ -37,6 +44,9 @@ state and helpers such as `project`, `BAR_COUNT`, `activeTracks`,
 | `bass-fix.css` | Focused editor layout corrections |
 | `app.js` | Profiles, project state, rendering, editing, preview, JSON, and MIDI |
 | `sty-export.js` | Experimental Yamaha SFF1/CASM export |
+| `timeline.html` | Separate MIDI Timeline Import workflow |
+| `timeline.js` | Timeline state, MIDI parsing, channel import, and rendering |
+| `timeline.css` | Responsive timeline layout |
 | `data/voices/psr-sx600.json` | Voice choices used by the inspector |
 | `data/drum-maps/yamaha-xg.json` | Yamaha/XG drum note metadata |
 
@@ -139,6 +149,20 @@ For PSR-SX600 uploaded SFF2 bases, the export plan uses these marker slots:
 Standard MIDI export is implemented in `app.js`. It converts project timing to
 MIDI ticks, writes note events and track metadata, and downloads either the
 current section or selected track. This path is independent of Yamaha CASM.
+
+## MIDI Timeline Import
+
+`timeline.html` intentionally does not load `app.js`; it owns a compatible
+project object so the original prototype can remain stable. It defines the
+shared exporter globals required by `sty-export.js`: `project`, `BAR_COUNT`,
+`activeTracks()`, `tempoBytes()`, `safeName()`, and `downloadBlob()`.
+
+The MIDI parser supports standard PPQ-timed format-0 and format-1 files. It
+merges Note On/Off events across source tracks, pairs notes by MIDI channel and
+pitch, and imports one user-selected source channel into the selected project
+section and target track. The target profile supplies the fixed output channel
+and section-to-marker mapping; the source channel is never assumed to be the
+same as the Yamaha output channel.
 
 ## STY Container Model
 

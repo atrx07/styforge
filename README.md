@@ -2,7 +2,7 @@
 
 StyleForge Lite is a static, mobile-first Yamaha arranger style sketchpad. It lets you build simple drum and accompaniment patterns in the browser, preview them with WebAudio, save/load projects as JSON, export MIDI, and experiment with Yamaha `.STY` style export for PSR-E and related arranger keyboards.
 
-Current app version: **v1.2.4 experimental**
+Current app version: **v1.3.0 experimental**
 
 ## Quick Start
 
@@ -20,6 +20,9 @@ http://127.0.0.1:8080
 
 No backend, package install, or build step is required. The app is designed for static hosts such as Cloudflare Pages.
 
+The original grid editor remains the prototype page. Open
+`http://127.0.0.1:8080/timeline.html` for the MIDI Timeline Import workflow.
+
 ## Main Files
 
 - `index.html` - app shell and controls
@@ -27,6 +30,9 @@ No backend, package install, or build step is required. The app is designed for 
 - `bass-fix.css` - targeted editor styling fixes
 - `app.js` - project model, sequencer UI, preview audio, JSON, and MIDI export
 - `sty-export.js` - experimental Yamaha `.STY` export logic
+- `timeline.html` - separate MIDI Timeline Import page
+- `timeline.js` - MIDI parser, import routing, timeline project state, and view
+- `timeline.css` - timeline-specific responsive layout
 - `data/voices/psr-sx600.json` - voice list
 - `data/drum-maps/yamaha-xg.json` - Yamaha/XG drum map data
 
@@ -48,6 +54,8 @@ No backend, package install, or build step is required. The app is designed for 
 - In-browser WebAudio preview
 - MIDI export for the whole section or selected track
 - Experimental Yamaha `.STY` export
+- MIDI Timeline Import page for importing one MIDI channel into a selected
+  section and target track, then exporting with a built-in map
 
 ## Keyboard Profiles
 
@@ -101,6 +109,18 @@ Sections:
 - Ending A, B, C
 
 ## Export Modes
+
+### MIDI Timeline Import
+
+The timeline page is separate from the prototype editor. Choose PSR-E Series or
+PSR-SX600, select the style section and target track, choose the source MIDI
+channel, and import a Standard MIDI file. Its Note On/Off data is placed in the
+selected section using quarter-note project timing, shown on the timeline, and
+then exported through the relevant built-in Yamaha mapping.
+
+PSR-E and PSR-SX600 are deliberately separate profiles: their visible tracks,
+MIDI channels, sections, and Yamaha marker slots differ. Timeline projects can
+be saved and reloaded as JSON.
 
 ### MIDI Export
 
@@ -204,6 +224,15 @@ CASM is the important "style brain." It describes which channels belong to which
 6. Save the project as JSON when needed.
 7. Export MIDI for inspection or `.STY` for keyboard testing.
 
+For MIDI timeline import:
+
+1. Open `timeline.html` from the prototype editor.
+2. Choose PSR-E Series or PSR-SX600, then select a section and target track.
+3. Set the source MIDI channel and import a `.mid` or `.midi` file.
+4. Review the imported notes in the timeline and repeat for other tracks and
+   sections.
+5. Export the completed style with the built-in profile mapping.
+
 For uploaded skeleton testing:
 
 1. Choose **Uploaded STY Skeleton** mode.
@@ -232,6 +261,13 @@ For uploaded skeleton testing:
 - Added Built-in PSR-SX600 Mapping: SFF2, PPQ 1920, SX markers, and generated
   `Ctb2` CASM groups with no uploaded base required.
 - Retained Uploaded Yamaha STY/PRS Base as the SX compatibility fallback.
+
+### v1.3.0
+
+- Added the separate MIDI Timeline Import page while retaining the original
+  editor as the prototype page.
+- Added PSR-E and PSR-SX600-specific section, track, MIDI-channel, and export
+  mapping choices for imported MIDI notes.
 
 ### v1.2.1
 

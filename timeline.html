@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StyleForge MIDI Timeline</title>
+  <link rel="stylesheet" href="styles.css?v=1.3.0"/>
+  <link rel="stylesheet" href="timeline.css?v=1.3.0"/>
+</head>
+<body class="timeline-page">
+  <header>
+    <div>
+      <h1>StyleForge MIDI Timeline</h1>
+      <p>Import one MIDI channel at a time into an arranger section, then export with a built-in Yamaha map.</p>
+    </div>
+    <div class="header-actions">
+      <a class="pageLink" href="index.html">Open Prototype Editor</a>
+      <label class="fileLabel">Import MIDI<input type="file" id="midiImportInput" accept=".mid,.MID,.midi,.MIDI,audio/midi"/></label>
+      <button id="saveTimelineBtn">Save Timeline JSON</button>
+      <label class="fileLabel">Load Timeline JSON<input type="file" id="loadTimelineInput" accept=".json"/></label>
+      <button id="exportStyleBtn">Export STY</button>
+    </div>
+  </header>
+
+  <main class="timeline-main">
+    <section class="panel timeline-settings">
+      <h2>Style Target</h2>
+      <div class="timeline-settings-grid">
+        <label>Style Name<input id="styleName" value="Timeline Style"/></label>
+        <label>Tempo<input id="tempo" type="number" min="40" max="240" value="120"/></label>
+        <label>Bars<select id="barsSelect"><option value="1" selected>1 bar</option><option value="2">2 bars</option><option value="4">4 bars</option></select></label>
+        <label>Keyboard<select id="keyboardSelect"><option value="PSR-E Series">PSR-E Series</option><option value="PSR-SX600">PSR-SX600</option></select></label>
+        <label>Section<select id="sectionSelect"></select></label>
+        <label>Built-in Export Map<select id="styExportMode"><option value="builtin-psre">Built-in PSR-E Mapping</option><option value="builtin-sx">Built-in PSR-SX600 Mapping</option></select></label>
+      </div>
+      <p class="hint" id="sectionMap"></p>
+      <p class="hint" id="templateStatus">STY exporter loading...</p>
+    </section>
+
+    <section class="panel import-panel">
+      <h2>Import Destination</h2>
+      <div class="import-grid">
+        <label>Target Track<select id="targetTrackSelect"></select></label>
+        <label>Source MIDI Channel<select id="sourceChannelSelect"></select></label>
+      </div>
+      <label class="replace-toggle"><input type="checkbox" id="replaceTargetCheck" checked/> Replace notes already on this target track</label>
+      <div class="row-actions">
+        <button id="clearTrackBtn">Clear Target Track</button>
+        <button id="clearSectionBtn">Clear Current Section</button>
+      </div>
+      <p class="hint" id="importStatus">Choose a profile, section, target track, and source MIDI channel, then import a MIDI file.</p>
+    </section>
+
+    <section class="panel timeline-panel">
+      <div class="timeline-head">
+        <div>
+          <h2 id="timelineTitle">Main A Timeline</h2>
+          <p id="timelineHelp">Each row uses the keyboard profile's fixed StyleForge MIDI channel.</p>
+        </div>
+        <strong id="timelineSpan">1 bar / 16 steps</strong>
+      </div>
+      <div class="timeline-scroll">
+        <div id="timeline"></div>
+      </div>
+    </section>
+  </main>
+  <footer>v1.3.0: MIDI timeline import with separate PSR-E and PSR-SX600 built-in export maps.</footer>
+  <script src="timeline.js?v=1.3.0"></script>
+  <script src="sty-export.js?v=1.3.0"></script>
+</body>
+</html>

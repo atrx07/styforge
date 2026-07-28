@@ -1,6 +1,6 @@
 # StyleForge Lite Status
 
-Current checkpoint: **v1.2.4 experimental**
+Current checkpoint: **v1.3.0 experimental**
 
 Last reviewed: **2026-07-28**
 
@@ -24,6 +24,15 @@ the change log below.
 
 ### 2026-07-28
 
+- [x] Added a separate MIDI Timeline Import page; the original editor remains
+  the prototype page.
+- [x] Added channel-specific MIDI note import into the selected PSR-E or
+  PSR-SX600 section and target track.
+- [x] Connected timeline projects directly to the built-in PSR-E and PSR-SX600
+  style exporters without a skeleton upload.
+- [x] Browser smoke-tested a synthetic format-0, PPQ-480 MIDI import from
+  source channel 3, then switched to the SX profile and generated a built-in
+  SX export with no console errors at desktop and 375 px mobile widths.
 - [x] Added a generated PSR-SX600 SFF2 export mode that requires no uploaded
   skeleton.
 - [x] Generate a PPQ-1920 format-0 `MTrk`, SX section markers and matching
@@ -80,7 +89,20 @@ the change log below.
 - [~] Repeatable parser-based validation of emitted files.
 - [ ] Automated timing, channel, and end-of-track fixture tests.
 
-### 5. Uploaded Yamaha Skeleton Export
+### 5. MIDI Timeline Import
+
+- [x] Separate static timeline page linked from the prototype editor.
+- [x] Select PSR-E or PSR-SX600 profiles with their distinct tracks, MIDI
+  channels, sections, and Yamaha marker mapping.
+- [x] Import Note On/Off MIDI data from one selected source MIDI channel into
+  the selected section and target track.
+- [x] Preserve imported timing in quarter-note project units, clip it to the
+  selected one-, two-, or four-bar section, and show it in a track timeline.
+- [x] Save and reload timeline projects as JSON.
+- [~] Validate imports against a wider collection of type-0 and type-1 MIDI
+  files, especially overlapping same-pitch notes.
+
+### 6. Uploaded Yamaha Skeleton Export
 
 - [x] Load a working `.STY` or MIDI-style base in the browser.
 - [x] Remove old Note On and Note Off events only.
@@ -100,7 +122,7 @@ phrase availability depended on the skeleton's CASM channel coverage. The
 CASM-aware remapping code addresses this class of mismatch; broader hardware
 verification remains open.
 
-### 6. PSR-SX600 SFF2 Export
+### 7. PSR-SX600 SFF2 Export
 
 - [x] PSR-SX600 editor profile exposes two rhythm, bass, two chord, pad, and
   two phrase tracks.
@@ -117,7 +139,7 @@ verification remains open.
 - [!] No PSR-SX hardware load, playback, transition, or chord-following result
   has been recorded yet.
 
-### 7. Built-in PSR-E Export
+### 8. Built-in PSR-E Export
 
 - [x] Generate MIDI format 0 with PPQ 192.
 - [x] Generate one MTrk with SFF1 and SInt markers.
@@ -133,7 +155,7 @@ verification remains open.
 - [~] Repeat tests on multiple PSR-E models and firmware versions.
 - [ ] Replace reverse-engineered Ctab assumptions with documented fixture tests.
 
-### 8. Quality And Release Readiness
+### 9. Quality And Release Readiness
 
 - [x] Contributor workflow and architecture documentation.
 - [ ] Automated binary parser/export test harness.
