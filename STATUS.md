@@ -1,6 +1,6 @@
 # StyleForge Lite Status
 
-Current checkpoint: **v1.5.2 experimental**
+Current checkpoint: **v1.5.3 experimental**
 
 Last reviewed: **2026-07-29**
 
@@ -24,6 +24,12 @@ the change log below.
 
 ### 2026-07-29
 
+- [x] Added MIDI sequencer section preview with all active channels, optional
+  looping, WebAudio drum and melodic voices, transport status, and a
+  synchronized piano-roll and velocity-lane playhead.
+- [x] Browser-checked empty-section feedback, active loop playback, manual
+  stop, single-pass completion, playback cancellation on section changes, a
+  390 px mobile transport layout, desktop layout, and the browser console.
 - [x] Replaced the MIDI sequence page's decorative multi-track note overview
   with one editable piano roll for the selected target channel.
 - [x] Added note selection, drawing, movement, resizing, slicing, quantizing,

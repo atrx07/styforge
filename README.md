@@ -2,7 +2,7 @@
 
 StyleForge Lite is a static, mobile-first Yamaha arranger style sketchpad. It lets you build simple drum and accompaniment patterns in the browser, preview them with WebAudio, save/load projects as JSON, export MIDI, and experiment with Yamaha `.STY` style export for PSR-E and related arranger keyboards.
 
-Current app version: **v1.5.2 experimental**
+Current app version: **v1.5.3 experimental**
 
 ## Quick Start
 
@@ -235,7 +235,9 @@ For MIDI timeline import:
 4. Edit the imported notes in the selected channel piano roll. Drag to move,
    drag a note's right edge to resize, use Slice to cut, and adjust velocity in
    the lower lane. Repeat for other tracks and sections.
-5. Export the completed style with the built-in profile mapping.
+5. Use **Play section** to preview all active channels together. Preview loops
+   by default and follows the current tempo; disable Loop for a single pass.
+6. Export the completed style with the built-in profile mapping.
 
 For uploaded skeleton testing:
 
@@ -245,6 +247,14 @@ For uploaded skeleton testing:
 4. Check the export status line for CASM channel remaps before testing on hardware.
 
 ## Recent Version Notes
+
+### v1.5.3
+
+- Added section playback to the MIDI sequencer with all-channel WebAudio
+  preview, optional looping, stop controls, and a synchronized piano-roll
+  playhead.
+- Playback follows the selected section, profile, bar count, note timing,
+  velocity, and tempo, and stops safely when routing settings change.
 
 ### v1.5.2
 

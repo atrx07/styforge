@@ -27,6 +27,8 @@ const DRUM_LABELS = { 35: "Kick 2", 36: "Kick", 37: "Side stick", 38: "Snare", 3
 const MAX_HISTORY = 40;
 const PIANO_ROW_HEIGHT = 22;
 const VELOCITY_HEIGHT = 104;
+const PREVIEW_LOOKAHEAD_SECONDS = 0.12;
+const PREVIEW_SCHEDULER_MS = 25;
 
 let BAR_COUNT = 1;
 let project = createTimelineProject();
@@ -37,6 +39,16 @@ let velocityDrag = null;
 let noteSerial = 0;
 const undoStack = [];
 const redoStack = [];
+let audioContext = null;
+let previewMaster = null;
+let previewBus = null;
+let previewTimer = null;
+let previewFrame = null;
+let playbackStartTime = 0;
+let scheduledThroughBeat = 0;
+let isPreviewing = false;
+let previewMessage = "Ready to preview all active channels.";
+const activePreviewSources = new Set();
 
 const styleName = document.getElementById("styleName");
 const tempo = document.getElementById("tempo");
@@ -63,6 +75,11 @@ const quantizeButton = document.getElementById("quantizeNotesBtn");
 const shortenButton = document.getElementById("shortenNotesBtn");
 const lengthenButton = document.getElementById("lengthenNotesBtn");
 const deleteButton = document.getElementById("deleteNotesBtn");
+const previewPlayButton = document.getElementById("previewPlayBtn");
+const previewStopButton = document.getElementById("previewStopBtn");
+const previewLoopCheck = document.getElementById("previewLoopCheck");
+const previewStatus = document.getElementById("previewStatus");
+const previewProgressFill = document.getElementById("previewProgressFill");
 
 function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 function roundToPrecision(value) { return Math.round(value * 96) / 96; }
@@ -78,7 +95,7 @@ function makeTimelineSection() {
 function createTimelineProject() {
   const sections = {};
   TIMELINE_SECTION_IDS.forEach(id => { sections[id] = makeTimelineSection(); });
-  return { app: "StyleForge MIDI Timeline", version: "1.5.2", name: "Timeline Style", tempo: 120, barCount: 1, timeSignature: "4/4", keyboard: "PSR-E Series", sections };
+  return { app: "StyleForge MIDI Timeline", version: "1.5.3", name: "Timeline Style", tempo: 120, barCount: 1, timeSignature: "4/4", keyboard: "PSR-E Series", sections };
 }
 
 function currentProfile() { return TIMELINE_PROFILES[project.keyboard] || TIMELINE_PROFILES["PSR-E Series"]; }
@@ -130,7 +147,7 @@ function migrateTimelineProject() {
   BAR_COUNT = Number(project.barCount || 1);
   if (![1, 2, 4].includes(BAR_COUNT)) BAR_COUNT = 1;
   project.barCount = BAR_COUNT;
-  project.version = "1.5.2";
+  project.version = "1.5.3";
   project.keyboard = TIMELINE_PROFILES[project.keyboard] ? project.keyboard : "PSR-E Series";
   project.sections = project.sections || {};
   TIMELINE_SECTION_IDS.forEach(id => { if (!project.sections[id]) project.sections[id] = makeTimelineSection(); });
@@ -289,13 +306,13 @@ function renderTimeline() {
           <div class="piano-roll-ruler">${pianoRuler(steps)}</div>
           <div class="piano-roll-body">
             <div class="piano-keys">${pianoKeys(range)}</div>
-            <div class="piano-grid is-${editorTool}" id="pianoGrid" data-min-pitch="${range.min}" data-max-pitch="${range.max}" role="application" aria-label="Editable ${trackDisplay(track.id)} piano roll">${notes}<div class="selection-box" id="selectionBox" hidden></div></div>
+            <div class="piano-grid is-${editorTool}" id="pianoGrid" data-min-pitch="${range.min}" data-max-pitch="${range.max}" role="application" aria-label="Editable ${trackDisplay(track.id)} piano roll">${notes}<div class="preview-playhead" data-preview-playhead></div><div class="selection-box" id="selectionBox" hidden></div></div>
           </div>
         </div>
       </div>
       <section class="velocity-editor" aria-label="Velocity editor">
         <div class="velocity-editor-head"><strong>Velocity</strong><span>${selectedNoteIds.size ? `${selectedNoteIds.size} note${selectedNoteIds.size === 1 ? "" : "s"} selected` : "Drag a bar to change its velocity"}</span></div>
-        <div class="velocity-scroll"><div class="velocity-canvas"><div class="velocity-label">127</div><div class="velocity-grid" id="velocityGrid">${velocities}</div></div></div>
+        <div class="velocity-scroll"><div class="velocity-canvas"><div class="velocity-label">127</div><div class="velocity-grid" id="velocityGrid">${velocities}<div class="preview-playhead" data-preview-playhead></div></div></div></div>
       </section>
     </section>
   </div>`;
@@ -305,6 +322,7 @@ function renderTimeline() {
   restoredScroll.scrollTop = scrollTop;
   bindTimelineEvents();
   updateEditorControls();
+  updatePreviewVisuals();
 }
 
 function renderControls() {
@@ -367,6 +385,186 @@ function updateEditorControls() {
 function setEditorTool(tool) {
   editorTool = tool;
   updateEditorControls();
+}
+
+function previewTempo() {
+  return clamp(Number(tempo.value) || Number(project.tempo) || 120, 40, 240);
+}
+
+function previewSecondsPerBeat() { return 60 / previewTempo(); }
+function midiFrequency(pitch) { return 440 * Math.pow(2, (pitch - 69) / 12); }
+function previewOutput() { return previewBus || previewMaster || audioContext.destination; }
+
+async function ensurePreviewAudio() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    previewMaster = audioContext.createGain();
+    previewMaster.gain.value = 0.72;
+    previewMaster.connect(audioContext.destination);
+  }
+  if (audioContext.state === "suspended") await audioContext.resume();
+}
+
+function registerPreviewSource(source) {
+  activePreviewSources.add(source);
+  source.addEventListener("ended", () => activePreviewSources.delete(source), { once: true });
+  return source;
+}
+
+function schedulePreviewTone(track, note, time, duration) {
+  const oscillator = registerPreviewSource(audioContext.createOscillator());
+  const gain = audioContext.createGain();
+  const filter = audioContext.createBiquadFilter();
+  const level = clamp(note.velocity / 127, 0.08, 1);
+  oscillator.type = track.id === "bass" ? "sawtooth" : track.id === "pad" ? "triangle" : track.id.startsWith("phrase") ? "square" : "sine";
+  oscillator.frequency.setValueAtTime(midiFrequency(note.pitch), time);
+  filter.type = "lowpass";
+  filter.frequency.value = track.id === "bass" ? 520 : track.id === "pad" ? 1050 : 2100;
+  gain.gain.setValueAtTime(0.001, time);
+  gain.gain.exponentialRampToValueAtTime((track.id === "pad" ? 0.14 : 0.2) * level, time + Math.min(0.025, duration / 3));
+  gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+  oscillator.connect(filter).connect(gain).connect(previewOutput());
+  oscillator.start(time);
+  oscillator.stop(time + duration + 0.03);
+}
+
+function scheduleNoiseDrum(note, time, open) {
+  const duration = open ? 0.24 : 0.09;
+  const buffer = audioContext.createBuffer(1, Math.ceil(audioContext.sampleRate * duration), audioContext.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let index = 0; index < data.length; index += 1) data[index] = Math.random() * 2 - 1;
+  const source = registerPreviewSource(audioContext.createBufferSource());
+  const filter = audioContext.createBiquadFilter();
+  const gain = audioContext.createGain();
+  source.buffer = buffer;
+  filter.type = "highpass";
+  filter.frequency.value = open ? 5200 : 1400;
+  gain.gain.setValueAtTime((open ? 0.16 : 0.26) * note.velocity / 127, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+  source.connect(filter).connect(gain).connect(previewOutput());
+  source.start(time);
+  source.stop(time + duration);
+}
+
+function schedulePreviewDrum(note, time) {
+  if ([37, 38, 39, 40].includes(note.pitch)) return scheduleNoiseDrum(note, time, false);
+  if ([42, 44, 46, 49, 51, 52, 53, 55, 57, 59].includes(note.pitch)) return scheduleNoiseDrum(note, time, true);
+  const oscillator = registerPreviewSource(audioContext.createOscillator());
+  const gain = audioContext.createGain();
+  const kick = note.pitch === 35 || note.pitch === 36;
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(kick ? 145 : 90 + (note.pitch - 41) * 7, time);
+  oscillator.frequency.exponentialRampToValueAtTime(kick ? 45 : 58, time + 0.12);
+  gain.gain.setValueAtTime((kick ? 0.62 : 0.3) * note.velocity / 127, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.16);
+  oscillator.connect(gain).connect(previewOutput());
+  oscillator.start(time);
+  oscillator.stop(time + 0.17);
+}
+
+function schedulePreviewWindow(fromBeat, toBeat) {
+  const span = sectionSpan();
+  const secondsPerBeat = previewSecondsPerBeat();
+  const tracks = activeTracks(project.sections[currentSection()]);
+  const firstCycle = Math.floor(fromBeat / span);
+  const lastCycle = Math.floor(Math.max(fromBeat, toBeat - 1 / 960) / span);
+  for (let cycle = firstCycle; cycle <= lastCycle; cycle += 1) {
+    if (!previewLoopCheck.checked && cycle > 0) break;
+    tracks.forEach(track => {
+      track.notes.forEach(note => {
+        const absoluteBeat = cycle * span + note.start;
+        if (absoluteBeat < fromBeat || absoluteBeat >= toBeat) return;
+        const time = playbackStartTime + absoluteBeat * secondsPerBeat;
+        const duration = Math.max(0.04, note.duration * secondsPerBeat);
+        if (isDrumTrack(track)) schedulePreviewDrum(note, time);
+        else schedulePreviewTone(track, note, time, duration);
+      });
+    });
+  }
+}
+
+function updatePreviewVisuals(progressOverride) {
+  let progress = Number.isFinite(progressOverride) ? progressOverride : 0;
+  let beat = progress * sectionSpan();
+  if (isPreviewing && audioContext) {
+    const elapsedBeats = Math.max(0, (audioContext.currentTime - playbackStartTime) / previewSecondsPerBeat());
+    beat = previewLoopCheck.checked ? elapsedBeats % sectionSpan() : Math.min(sectionSpan(), elapsedBeats);
+    progress = clamp(beat / sectionSpan(), 0, 1);
+  }
+  previewPlayButton.disabled = isPreviewing;
+  previewStopButton.disabled = !isPreviewing;
+  previewStatus.textContent = isPreviewing ? `${sectionDetails()[1]} · ${previewTempo()} BPM · all active channels${previewLoopCheck.checked ? " · looping" : ""}` : previewMessage;
+  previewProgressFill.style.transform = `scaleX(${progress})`;
+  document.querySelectorAll("[data-preview-playhead]").forEach(playhead => {
+    playhead.style.left = `${progress * 100}%`;
+    playhead.classList.toggle("visible", isPreviewing);
+  });
+  timeline.querySelectorAll(".piano-note").forEach(element => {
+    const note = findNote(element.dataset.noteId);
+    element.classList.toggle("previewing", Boolean(isPreviewing && note && beat >= note.start && beat < note.start + note.duration));
+  });
+}
+
+function runPreviewFrame() {
+  if (!isPreviewing) return;
+  updatePreviewVisuals();
+  previewFrame = requestAnimationFrame(runPreviewFrame);
+}
+
+function runPreviewScheduler() {
+  if (!isPreviewing) return;
+  const secondsPerBeat = previewSecondsPerBeat();
+  const elapsedBeats = (audioContext.currentTime - playbackStartTime) / secondsPerBeat;
+  if (!previewLoopCheck.checked && elapsedBeats >= sectionSpan()) {
+    stopPreview("Section preview complete.", 1);
+    return;
+  }
+  const targetBeat = Math.max(0, (audioContext.currentTime + PREVIEW_LOOKAHEAD_SECONDS - playbackStartTime) / secondsPerBeat);
+  const scheduleTo = previewLoopCheck.checked ? targetBeat : Math.min(sectionSpan(), targetBeat);
+  if (scheduleTo > scheduledThroughBeat) {
+    schedulePreviewWindow(scheduledThroughBeat, scheduleTo);
+    scheduledThroughBeat = scheduleTo;
+  }
+}
+
+async function startPreview() {
+  const noteCount = activeTracks(project.sections[currentSection()]).reduce((total, track) => total + track.notes.length, 0);
+  if (!noteCount) {
+    previewMessage = `${sectionDetails()[1]} has no notes to preview.`;
+    updatePreviewVisuals();
+    return;
+  }
+  stopPreview("Preparing section preview.");
+  await ensurePreviewAudio();
+  previewBus = audioContext.createGain();
+  previewBus.gain.value = 1;
+  previewBus.connect(previewMaster);
+  project.tempo = previewTempo();
+  isPreviewing = true;
+  scheduledThroughBeat = 0;
+  playbackStartTime = audioContext.currentTime + 0.06;
+  runPreviewScheduler();
+  previewTimer = setInterval(runPreviewScheduler, PREVIEW_SCHEDULER_MS);
+  previewFrame = requestAnimationFrame(runPreviewFrame);
+  updatePreviewVisuals(0);
+}
+
+function stopPreview(message = "Preview stopped.", progress = 0) {
+  isPreviewing = false;
+  if (previewTimer) clearInterval(previewTimer);
+  if (previewFrame) cancelAnimationFrame(previewFrame);
+  previewTimer = null;
+  previewFrame = null;
+  activePreviewSources.forEach(source => {
+    try { source.stop(); } catch (error) { /* The source may have already ended. */ }
+  });
+  activePreviewSources.clear();
+  if (previewBus) {
+    previewBus.disconnect();
+    previewBus = null;
+  }
+  previewMessage = message;
+  updatePreviewVisuals(progress);
 }
 
 function findNote(id) { return currentTrack().notes.find(note => note.id === id); }
@@ -808,6 +1006,7 @@ function parseMidi(bytes) {
 }
 
 function importMidi(file) {
+  stopPreview("MIDI imported. Press play to preview the updated section.");
   setImportFeedback("pending", `Reading ${file.name}...`);
   const reader = new FileReader();
   reader.onload = () => {
@@ -857,6 +1056,7 @@ function importMidi(file) {
 function clearTargetTrack() {
   const track = currentTrack();
   if (!track.notes.length) { setImportFeedback("warning", `${trackDisplay(track.id)} is already empty.`); return; }
+  stopPreview("Target track cleared. Press play to preview the updated section.");
   rememberEdit();
   track.notes = [];
   selectedNoteIds = new Set();
@@ -867,6 +1067,7 @@ function clearTargetTrack() {
 function clearCurrentSection() {
   const tracks = activeTracks();
   if (!tracks.some(track => track.notes.length)) { setImportFeedback("warning", `${sectionDetails()[1]} is already empty.`); return; }
+  stopPreview("Current section cleared.");
   rememberEdit();
   tracks.forEach(track => { track.notes = []; });
   selectedNoteIds = new Set();
@@ -881,6 +1082,7 @@ function saveTimeline() {
 }
 
 function loadTimeline(file) {
+  stopPreview("Project loaded. Press play to preview its current section.");
   const reader = new FileReader();
   reader.onload = () => {
     try {
@@ -901,6 +1103,7 @@ function loadTimeline(file) {
 
 function setBars(value) {
   if (value === BAR_COUNT) return;
+  stopPreview("Bar length changed. Press play to preview the updated section.");
   rememberEdit();
   BAR_COUNT = value;
   project.barCount = value;
@@ -922,14 +1125,25 @@ function bindStaticControls() {
   deleteButton.onclick = deleteSelectedNotes;
   undoButton.onclick = undoEdit;
   redoButton.onclick = redoEdit;
+  previewPlayButton.onclick = startPreview;
+  previewStopButton.onclick = () => stopPreview();
+  previewLoopCheck.onchange = () => {
+    if (isPreviewing) stopPreview("Loop setting changed. Press play to restart the section.");
+    else updatePreviewVisuals();
+  };
   snapSelect.onchange = updateEditorControls;
   keyboardSelect.onchange = () => {
+    stopPreview("Keyboard profile changed. Press play to preview its active channels.");
     project.keyboard = keyboardSelect.value;
     sourceChannelSelect.dataset.userSelected = "";
     selectedNoteIds = new Set();
     renderControls();
   };
-  sectionSelect.onchange = () => { selectedNoteIds = new Set(); renderControls(); };
+  sectionSelect.onchange = () => {
+    stopPreview("Section changed. Press play to preview it.");
+    selectedNoteIds = new Set();
+    renderControls();
+  };
   barsSelect.onchange = () => setBars(Number(barsSelect.value));
   targetTrackSelect.onchange = () => {
     sourceChannelSelect.value = String(currentTrack().midiChannel);
@@ -939,7 +1153,10 @@ function bindStaticControls() {
   };
   sourceChannelSelect.onchange = () => { sourceChannelSelect.dataset.userSelected = "true"; };
   styleName.oninput = () => { project.name = styleName.value; };
-  tempo.oninput = () => { project.tempo = Number(tempo.value) || 120; };
+  tempo.oninput = () => {
+    project.tempo = Number(tempo.value) || 120;
+    if (isPreviewing) stopPreview("Tempo changed. Press play to restart at the new tempo.");
+  };
   midiImportInput.onchange = event => {
     const file = event.target.files[0];
     if (file) importMidi(file);
@@ -963,6 +1180,11 @@ function bindStaticControls() {
     }
     if ((event.ctrlKey || event.metaKey) && key === "y") { event.preventDefault(); redoEdit(); return; }
     if ((event.ctrlKey || event.metaKey) && key === "a") { event.preventDefault(); setSelected(currentTrack().notes.map(note => note.id)); return; }
+    if (event.code === "Space" && !event.ctrlKey && !event.metaKey && !event.altKey) {
+      event.preventDefault();
+      if (isPreviewing) stopPreview(); else startPreview();
+      return;
+    }
     if (event.key === "Delete" || event.key === "Backspace") { event.preventDefault(); deleteSelectedNotes(); return; }
     if (event.key === "ArrowLeft") { event.preventDefault(); nudgeSelected(-gridUnit(), 0); return; }
     if (event.key === "ArrowRight") { event.preventDefault(); nudgeSelected(gridUnit(), 0); return; }
@@ -972,6 +1194,7 @@ function bindStaticControls() {
     if (key === "d") setEditorTool("draw");
     if (key === "s") setEditorTool("slice");
   });
+  window.addEventListener("pagehide", () => stopPreview("Preview stopped."));
 }
 
 bindStaticControls();
