@@ -1,8 +1,8 @@
 # StyleForge Lite Status
 
-Current checkpoint: **v1.4.0 experimental**
+Current checkpoint: **v1.5.2 experimental**
 
-Last reviewed: **2026-07-28**
+Last reviewed: **2026-07-29**
 
 ## Marking Guide
 
@@ -21,6 +21,22 @@ the affected checkpoint when its state changes; otherwise add a dated entry to
 the change log below.
 
 ## Change Log
+
+### 2026-07-29
+
+- [x] Replaced the MIDI sequence page's decorative multi-track note overview
+  with one editable piano roll for the selected target channel.
+- [x] Added note selection, drawing, movement, resizing, slicing, quantizing,
+  length changes, deletion, velocity-lane editing, keyboard nudging, and
+  bounded undo/redo history to timeline projects.
+- [x] Kept PSR-E and PSR-SX600 section, channel, and export mappings separate;
+  the piano-roll editor changes only project note data consumed by the existing
+  exporter.
+- [x] Browser-checked desktop authoring (draw, resize, move, slice, undo/redo,
+  and velocity edits), the PSR-SX600 profile (14 sections and eight channels),
+  and a 390 px mobile layout. The mobile grid, ruler, keys, and note geometry
+  align without page-level horizontal overflow; no browser console errors were
+  reported.
 
 ### 2026-07-28
 

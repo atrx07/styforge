@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Import and route MIDI into Yamaha arranger style sections with StyleForge Lite."/>
   <title>MIDI sequence | StyleForge Lite</title>
-  <link rel="stylesheet" href="styles.css?v=1.4.0"/>
-  <link rel="stylesheet" href="timeline.css?v=1.4.0"/>
+  <link rel="stylesheet" href="styles.css?v=1.5.2"/>
+  <link rel="stylesheet" href="timeline.css?v=1.5.2"/>
 </head>
 <body class="workspace-page timeline-page">
   <header class="site-header workspace-header">
@@ -24,7 +24,7 @@
       <h1>MIDI sequence</h1>
       <p>Bring a MIDI channel into the section and track you choose. The selected keyboard profile supplies the Yamaha output map.</p>
       <div class="workspace-toolbar">
-        <label class="fileLabel primary-label">Import MIDI<input type="file" id="midiImportInput" accept=".mid,.MID,.midi,.MIDI,audio/midi"/></label>
+        <label class="fileLabel primary-label">Import into active channel<input type="file" id="midiImportInput" accept=".mid,.MID,.midi,.MIDI,audio/midi"/></label>
         <button id="saveTimelineBtn" class="button secondary">Save project</button>
         <label class="fileLabel">Load project<input type="file" id="loadTimelineInput" accept=".json"/></label>
         <button id="exportStyleBtn" class="button primary">Export STY</button>
@@ -63,20 +63,33 @@
       <section class="panel timeline-panel">
         <div class="timeline-head">
           <div>
-            <h2 id="timelineTitle">Main A timeline</h2>
-            <p id="timelineHelp">Each row uses the keyboard profile's fixed StyleForge MIDI channel.</p>
+            <h2 id="timelineTitle">Main A piano roll</h2>
+            <p id="timelineHelp">Choose a channel, then edit its notes before exporting the style.</p>
           </div>
           <strong id="timelineSpan">1 bar / 16 steps</strong>
         </div>
-        <div class="timeline-scroll">
-          <div id="timeline"></div>
+        <div class="piano-toolbar" role="toolbar" aria-label="Piano roll editing tools">
+          <div class="tool-group" aria-label="Editing tool">
+            <button type="button" class="editor-tool active" data-editor-tool="select" aria-pressed="true">Select</button>
+            <button type="button" class="editor-tool" data-editor-tool="draw" aria-pressed="false">Draw</button>
+            <button type="button" class="editor-tool" data-editor-tool="slice" aria-pressed="false">Slice</button>
+          </div>
+          <label class="snap-control">Snap<select id="snapSelect"><option value="0.25">1/16</option><option value="0.5">1/8</option><option value="1">1/4</option></select></label>
+          <button type="button" id="quantizeNotesBtn" class="button secondary">Quantize</button>
+          <button type="button" id="shortenNotesBtn" class="button secondary">Shorten</button>
+          <button type="button" id="lengthenNotesBtn" class="button secondary">Lengthen</button>
+          <button type="button" id="deleteNotesBtn" class="button secondary">Delete</button>
+          <button type="button" id="undoBtn" class="button secondary" disabled>Undo</button>
+          <button type="button" id="redoBtn" class="button secondary" disabled>Redo</button>
         </div>
+        <p class="editor-status" id="editorStatus" aria-live="polite">Select a channel to start editing.</p>
+        <div id="timeline" class="piano-roll-host"></div>
       </section>
     </div>
   </main>
 
   <footer class="site-footer">StyleForge Lite. MIDI sequence workspace.</footer>
-  <script src="timeline.js?v=1.4.0"></script>
-  <script src="sty-export.js?v=1.4.0"></script>
+  <script src="timeline.js?v=1.5.2"></script>
+  <script src="sty-export.js?v=1.5.2"></script>
 </body>
 </html>

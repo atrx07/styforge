@@ -39,8 +39,9 @@ The app is expected to provide:
   section.
 - Drum-grid editing for rhythm tracks.
 - Piano-roll editing for bass, chord, pad, and phrase tracks.
-- A separate MIDI timeline workflow that imports one source MIDI channel into
-  a selected style section and target track.
+- A separate MIDI sequence workflow that imports one source MIDI channel into
+  a selected style section and target track, then opens it in an editable
+  piano roll with timing, pitch, duration, and velocity controls.
 - Note pitch, start, duration, and velocity data.
 - In-browser WebAudio preview for sketching.
 - JSON save and load.
@@ -80,7 +81,8 @@ StyleForge Lite is intentionally:
 - A static frontend with no backend or account system.
 - A compact home page plus two complementary editing surfaces: the original
   grid prototype and the MIDI timeline import page.
-- A pattern and style editor, not a full digital audio workstation.
+- A pattern and style editor with a focused MIDI piano roll, not a full audio
+  production workstation.
 - A simple WebAudio preview, not a Yamaha sound-engine emulator.
 - Focused on built-in SFF1 PSR-E and experimental built-in SFF2 PSR-SX600
   export before broader SFF2 generation support.

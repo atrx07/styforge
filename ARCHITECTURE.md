@@ -51,9 +51,9 @@ state and helpers such as `project`, `BAR_COUNT`, `activeTracks`,
 | `styles.css` | Shared mobile-first visual system and prototype styling |
 | `app.js` | Profiles, project state, rendering, editing, preview, JSON, and MIDI |
 | `sty-export.js` | Experimental Yamaha SFF1/CASM export |
-| `timeline.html` | Separate MIDI Timeline Import workflow |
-| `timeline.js` | Timeline state, MIDI parsing, channel import, and rendering |
-| `timeline.css` | Responsive timeline layout |
+| `timeline.html` | Separate MIDI sequence and piano-roll workflow |
+| `timeline.js` | MIDI state, parsing, channel import, piano-roll editing, and rendering |
+| `timeline.css` | Responsive piano-roll workspace layout |
 | `data/voices/psr-sx600.json` | Voice choices used by the inspector |
 | `data/drum-maps/yamaha-xg.json` | Yamaha/XG drum note metadata |
 
@@ -170,6 +170,13 @@ pitch, and imports one user-selected source channel into the selected project
 section and target track. The target profile supplies the fixed output channel
 and section-to-marker mapping; the source channel is never assumed to be the
 same as the Yamaha output channel.
+
+Each active StyleForge target track has its own selectable piano-roll view. The
+editor keeps note pitch, quarter-note start, duration, velocity, and a portable
+note id in the timeline JSON schema. It supports drawing, selection, movement,
+right-edge resizing, vertical slicing, grid quantization, keyboard nudging,
+velocity-lane changes, and bounded undo/redo history. These changes modify only
+the project note data that the shared exporter already consumes.
 
 The import status is an ARIA live region with pending, success, warning, and
 error states. Before replacing any target notes, the importer confirms that the
